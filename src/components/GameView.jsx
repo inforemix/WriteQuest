@@ -7,6 +7,7 @@ function GameView({ stage, onComplete }) {
   const [time, setTime] = useState(stage.mode === 'easy' ? 30 : 60);
   const [isWon, setIsWon] = useState(false);
   const [draggedPiece, setDraggedPiece] = useState(null);
+  const [draggedFromIndex, setDraggedFromIndex] = useState(null);
   const [showHint, setShowHint] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
@@ -158,9 +159,10 @@ function GameView({ stage, onComplete }) {
     }, 1000);
   };
 
-  const handleDragStart = (index) => {
+  const handleDragStart = (index, visualIndex) => {
     if (!isDraggable) return;
     setDraggedPiece(index);
+    setDraggedFromIndex(visualIndex);
   };
 
   const handleDragOver = (e) => {
@@ -179,8 +181,14 @@ function GameView({ stage, onComplete }) {
 
     setPieces(newPieces);
     setDraggedPiece(null);
+    setDraggedFromIndex(null);
     setMoves(m => m + 1);
     checkWin(newPieces);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedPiece(null);
+    setDraggedFromIndex(null);
   };
 
   const handleShowHint = () => {
@@ -404,21 +412,32 @@ function GameView({ stage, onComplete }) {
 
       <div className="puzzle-container">
         <div className={`puzzle-grid ${stage.mode}`}>
-          {sortedPieces.map((piece, index) => (
-            <div
-              key={index}
-              className={`puzzle-piece ${piece.rotation === 0 && piece.currentIndex === piece.originalIndex ? 'correct' : ''}`}
-              style={{
-                backgroundImage: `url(${piece.image})`,
-                transform: `rotate(${piece.displayRotation}deg)`
-              }}
-              onClick={() => handleRotate(piece.originalIndex)}
-              draggable={isDraggable}
-              onDragStart={() => handleDragStart(piece.currentIndex)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(piece.currentIndex)}
-            />
-          ))}
+          {sortedPieces.map((piece, index) => {
+            const isBeingDragged = draggedPiece === piece.currentIndex;
+            const isHollowSlot = draggedFromIndex === index;
+            const isDropTarget = draggedPiece !== null && !isBeingDragged && !isHollowSlot;
+
+            return (
+              <div
+                key={index}
+                className={`puzzle-piece
+                  ${piece.rotation === 0 && piece.currentIndex === piece.originalIndex ? 'correct' : ''}
+                  ${isBeingDragged ? 'dragging' : ''}
+                  ${isHollowSlot ? 'hollow-slot' : ''}
+                  ${isDropTarget ? 'drop-target' : ''}`}
+                style={{
+                  backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
+                  transform: `rotate(${piece.displayRotation}deg)`
+                }}
+                onClick={() => handleRotate(piece.originalIndex)}
+                draggable={isDraggable}
+                onDragStart={() => handleDragStart(piece.currentIndex, index)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(piece.currentIndex)}
+                onDragEnd={handleDragEnd}
+              />
+            );
+          })}
         </div>
 
         {showHint && (
