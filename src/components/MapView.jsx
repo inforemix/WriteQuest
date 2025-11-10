@@ -4,6 +4,8 @@ import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [draggedStageId, setDraggedStageId] = useState(null);
+  const [dragOverStageId, setDragOverStageId] = useState(null);
 
   const filteredStages = stages.filter(s => s.mode === mode);
 
@@ -60,6 +62,49 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     setShowUploadModal(false);
   };
 
+  const handleDragStart = (e, stageId) => {
+    if (!isAdmin) return;
+    setDraggedStageId(stageId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, stageId) => {
+    if (!isAdmin) return;
+    e.preventDefault();
+    setDragOverStageId(stageId);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverStageId(null);
+  };
+
+  const handleDrop = (e, targetStageId) => {
+    if (!isAdmin || !draggedStageId) return;
+    e.preventDefault();
+
+    if (draggedStageId === targetStageId) {
+      setDraggedStageId(null);
+      setDragOverStageId(null);
+      return;
+    }
+
+    const newStages = [...stages];
+    const draggedIndex = newStages.findIndex(s => s.id === draggedStageId);
+    const targetIndex = newStages.findIndex(s => s.id === targetStageId);
+
+    const [draggedStage] = newStages.splice(draggedIndex, 1);
+    newStages.splice(targetIndex, 0, draggedStage);
+
+    onStagesUpdate(newStages);
+    setDraggedStageId(null);
+    setDragOverStageId(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedStageId(null);
+    setDragOverStageId(null);
+  };
+
   return (
     <div className="map-view">
       <div className="map-header">
@@ -103,8 +148,20 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
         ) : (
           filteredStages.map((stage) => {
             const completed = isStageCompleted(stage.id);
+            const isDragging = draggedStageId === stage.id;
+            const isDragOver = dragOverStageId === stage.id;
+
             return (
-              <div key={stage.id} className={`stage-card ${completed ? 'completed' : ''}`}>
+              <div
+                key={stage.id}
+                className={`stage-card ${completed ? 'completed' : ''} ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''}`}
+                draggable={isAdmin}
+                onDragStart={(e) => handleDragStart(e, stage.id)}
+                onDragOver={(e) => handleDragOver(e, stage.id)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, stage.id)}
+                onDragEnd={handleDragEnd}
+              >
                 {completed && <div className="completed-badge">✓ Completed</div>}
                 <img src={stage.image} alt={stage.name} className="stage-preview" />
                 <div className="stage-info">

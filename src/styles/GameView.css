@@ -6,11 +6,16 @@
 }
 
 .game-header {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 16px;
   padding: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .game-stats {
@@ -98,19 +103,21 @@
 }
 
 .puzzle-container {
-  max-width: 600px;
+  max-width: 480px; /* 20% smaller than 600px */
   margin: 0 auto;
-  padding: 10px 15px;
+  padding: 5px 15px;
   position: relative;
 }
 
 .puzzle-grid {
   display: grid;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 6px;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 5px;
   border-radius: 16px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .puzzle-grid.easy {
@@ -128,21 +135,67 @@
   background-size: cover;
   background-position: center;
   position: relative;
-  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .puzzle-piece:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: scale(1.03);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .puzzle-piece.correct {
-  box-shadow: 0 0 0 3px #10b981;
+  box-shadow:
+    0 0 0 3px #10b981,
+    0 8px 24px rgba(16, 185, 129, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: magnetSnap 0.3s ease-out;
+}
+
+@keyframes magnetSnap {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.puzzle-piece.near-correct {
+  box-shadow:
+    0 0 0 2px rgba(16, 185, 129, 0.5),
+    0 4px 12px rgba(16, 185, 129, 0.2);
+  animation: pulse-glow 1s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(16, 185, 129, 0.5),
+      0 4px 12px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(16, 185, 129, 0.7),
+      0 6px 16px rgba(16, 185, 129, 0.4);
+  }
 }
 
 .puzzle-piece.dragging {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: move;
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
 .particle {
@@ -501,4 +554,83 @@
 .tutorial-start-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .game-view {
+    padding: 10px;
+  }
+
+  .game-header {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .game-header h2 {
+    font-size: 1.1rem !important;
+  }
+
+  .tutorial-button {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .hint-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .difficulty-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .puzzle-container {
+    max-width: 95%;
+    padding: 5px 10px;
+  }
+
+  .puzzle-grid {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .win-modal,
+  .time-expired-modal {
+    max-width: 90%;
+    padding: 25px;
+  }
+
+  .tutorial-modal {
+    max-width: 95%;
+  }
+
+  .tutorial-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .tutorial-section p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-stats {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .stat {
+    flex: 1 1 45%;
+  }
 }

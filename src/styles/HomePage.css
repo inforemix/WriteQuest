@@ -2,7 +2,18 @@
   position: relative;
   min-height: 100vh;
   background: linear-gradient(180deg, #87CEEB 0%, #98D8E8 100%);
+  background-size: 200% 200%;
   overflow: hidden;
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .clouds {
