@@ -1,15 +1,15 @@
 .game-view {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  padding: 15px;
   position: relative;
 }
 
 .game-header {
   background: white;
   border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 15px;
+  margin-bottom: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -27,12 +27,50 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: #10b981;
+  transition: color 0.3s;
+}
+
+.stat-value.time-warning {
+  color: #ef4444;
+  animation: pulse-warning 1s infinite;
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .stat-label {
   font-size: 0.85rem;
   color: #6b7280;
   margin-top: 4px;
+}
+
+.tutorial-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-button:hover {
+  background: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
 }
 
 .hint-button {
@@ -62,15 +100,15 @@
 .puzzle-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px 15px;
   position: relative;
 }
 
 .puzzle-grid {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 8px;
+  padding: 6px;
   border-radius: 16px;
   backdrop-filter: blur(10px);
 }
@@ -293,4 +331,174 @@
   z-index: 2999;
   transition: opacity 0.5s;
   display: none;
+}
+
+/* Time Expired Modal */
+.time-expired-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  text-align: center;
+  animation: scaleIn 0.3s ease-in-out;
+  max-width: 400px;
+  width: 90%;
+}
+
+.time-expired-emoji {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.time-expired-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ef4444;
+  margin-bottom: 10px;
+}
+
+.time-expired-text {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+.time-expired-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.restart-button {
+  width: 100%;
+  padding: 14px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.restart-button:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.back-button-modal {
+  width: 100%;
+  padding: 14px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button-modal:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+/* Tutorial Modal */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3500;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.tutorial-modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px 20px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.tutorial-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #111827;
+  margin: 0;
+}
+
+.tutorial-content {
+  padding: 30px;
+}
+
+.tutorial-section {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.tutorial-section:last-child {
+  margin-bottom: 0;
+}
+
+.tutorial-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.tutorial-section h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.tutorial-section p {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.tutorial-start-button {
+  width: calc(100% - 60px);
+  padding: 16px;
+  margin: 0 30px 30px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.tutorial-start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
 }

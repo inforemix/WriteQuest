@@ -7,6 +7,20 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
   const filteredStages = stages.filter(s => s.mode === mode);
 
+  // Calculate progress
+  const completedCount = filteredStages.filter(stage => {
+    const completedKey = `completed-${stage.id}`;
+    return localStorage.getItem(completedKey) === 'true';
+  }).length;
+
+  const totalStages = filteredStages.length;
+  const progressPercent = totalStages > 0 ? (completedCount / totalStages) * 100 : 0;
+
+  const isStageCompleted = (stageId) => {
+    const completedKey = `completed-${stageId}`;
+    return localStorage.getItem(completedKey) === 'true';
+  };
+
   const handleAddStage = () => {
     setShowUploadModal(true);
   };
@@ -52,9 +66,24 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
         <button className="back-button" onClick={onBack}>
           ← Back to Home
         </button>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: '700' }}>
-          {mode === 'easy' ? '🌟 Easy' : '🔥 Hard'} Stages
-        </h2>
+        <div style={{ flex: 1, textAlign: 'center' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '10px' }}>
+            {mode === 'easy' ? '🌟 Easy' : '🔥 Hard'} Stages
+          </h2>
+          {totalStages > 0 && (
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${progressPercent}%` }}
+                ></div>
+              </div>
+              <div className="progress-text">
+                {completedCount} / {totalStages} Completed ({Math.round(progressPercent)}%)
+              </div>
+            </div>
+          )}
+        </div>
         {isAdmin && (
           <button className="add-button" onClick={handleAddStage}>
             + Add Stage
@@ -72,27 +101,31 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             <p>{isAdmin ? 'Click "+ Add Stage" to create one!' : 'Ask admin to add stages!'}</p>
           </div>
         ) : (
-          filteredStages.map((stage) => (
-            <div key={stage.id} className="stage-card">
-              <img src={stage.image} alt={stage.name} className="stage-preview" />
-              <div className="stage-info">
-                <div className="stage-name">{stage.name}</div>
-                <div className={`difficulty-badge ${stage.mode}`}>
-                  {stage.mode === 'easy' ? '2×2' : '3×3'}
+          filteredStages.map((stage) => {
+            const completed = isStageCompleted(stage.id);
+            return (
+              <div key={stage.id} className={`stage-card ${completed ? 'completed' : ''}`}>
+                {completed && <div className="completed-badge">✓ Completed</div>}
+                <img src={stage.image} alt={stage.name} className="stage-preview" />
+                <div className="stage-info">
+                  <div className="stage-name">{stage.name}</div>
+                  <div className={`difficulty-badge ${stage.mode}`}>
+                    {stage.mode === 'easy' ? '2×2' : '3×3'}
+                  </div>
+                </div>
+                <div className="stage-actions">
+                  <button className="play-button" onClick={() => onPlayStage(stage)}>
+                    {completed ? '↻ Replay' : '▶ Play'}
+                  </button>
+                  {isAdmin && (
+                    <button className="delete-button" onClick={() => onDeleteStage(stage.id)}>
+                      🗑️
+                    </button>
+                  )}
                 </div>
               </div>
-              <div className="stage-actions">
-                <button className="play-button" onClick={() => onPlayStage(stage)}>
-                  ▶ Play
-                </button>
-                {isAdmin && (
-                  <button className="delete-button" onClick={() => onDeleteStage(stage.id)}>
-                    🗑️
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

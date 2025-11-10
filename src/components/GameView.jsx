@@ -4,19 +4,34 @@ import '../styles/GameView.css';
 function GameView({ stage, onComplete }) {
   const [pieces, setPieces] = useState([]);
   const [moves, setMoves] = useState(0);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(stage.mode === 'easy' ? 30 : 60);
   const [isWon, setIsWon] = useState(false);
   const [draggedPiece, setDraggedPiece] = useState(null);
   const [showHint, setShowHint] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [timeExpired, setTimeExpired] = useState(false);
   const timerRef = useRef();
   const hintTimerRef = useRef();
   const gridSize = stage.mode === 'easy' ? 2 : 3;
-  const isDraggable = stage.mode === 'hard';
+  const isDraggable = true; // Enable drag-drop for both modes
 
   useEffect(() => {
+    // Check if user has seen tutorial
+    const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+
     initializePuzzle();
     timerRef.current = setInterval(() => {
-      setTime(t => t + 1);
+      setTime(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          setTimeExpired(true);
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
     return () => {
       clearInterval(timerRef.current);
@@ -108,8 +123,8 @@ function GameView({ stage, onComplete }) {
     // Update logical rotation (for win condition)
     piece.rotation = (piece.rotation + 90) % 360;
 
-    // Update display rotation (always clockwise, no wrap)
-    piece.displayRotation = piece.displayRotation + 90;
+    // Update display rotation (use modulo to prevent accumulation)
+    piece.displayRotation = (piece.displayRotation + 90) % 360;
 
     setPieces(newPieces);
     setMoves(m => m + 1);
@@ -119,6 +134,28 @@ function GameView({ stage, onComplete }) {
     const sortedPieces = [...newPieces].sort((a, b) => a.currentIndex - b.currentIndex);
     const visualIndex = sortedPieces.findIndex(p => p.originalIndex === originalIndex);
     createParticles(visualIndex);
+  };
+
+  const handleRestartPuzzle = () => {
+    setTimeExpired(false);
+    setTime(stage.mode === 'easy' ? 30 : 60);
+    setMoves(0);
+    setIsWon(false);
+    setShowHint(false);
+    initializePuzzle();
+
+    // Restart timer
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTime(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          setTimeExpired(true);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
   };
 
   const handleDragStart = (index) => {
@@ -157,6 +194,15 @@ function GameView({ stage, onComplete }) {
     }, 3000);
   };
 
+  const handleCloseTutorial = () => {
+    setShowTutorial(false);
+    localStorage.setItem('hasSeenTutorial', 'true');
+  };
+
+  const handleShowTutorialAgain = () => {
+    setShowTutorial(true);
+  };
+
   const checkWin = (piecesArray) => {
     const isCorrect = piecesArray.every(piece =>
       piece.rotation === 0 && piece.currentIndex === piece.originalIndex
@@ -167,11 +213,16 @@ function GameView({ stage, onComplete }) {
       setIsWon(true);
       showConfetti();
 
+      // Save personal best time
       const key = `pb-${stage.mode}-${stage.id}`;
       const pb = localStorage.getItem(key);
       if (!pb || time < parseInt(pb)) {
         localStorage.setItem(key, time.toString());
       }
+
+      // Mark stage as completed
+      const completedKey = `completed-${stage.id}`;
+      localStorage.setItem(completedKey, 'true');
     }
   };
 
@@ -319,6 +370,9 @@ function GameView({ stage, onComplete }) {
           <button className="back-button" onClick={onComplete}>← Back</button>
           <h2 style={{ fontSize: '1.3rem', fontWeight: '700' }}>{stage.name}</h2>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button className="tutorial-button" onClick={handleShowTutorialAgain}>
+              ❓
+            </button>
             <button className="hint-button" onClick={handleShowHint} disabled={showHint || isWon}>
               💡 Hint
             </button>
@@ -330,8 +384,10 @@ function GameView({ stage, onComplete }) {
 
         <div className="game-stats">
           <div className="stat">
-            <div className="stat-value">{formatTime(time)}</div>
-            <div className="stat-label">Time</div>
+            <div className={`stat-value ${time <= 10 ? 'time-warning' : ''}`}>
+              {formatTime(time)}
+            </div>
+            <div className="stat-label">Time Remaining</div>
           </div>
           <div className="stat">
             <div className="stat-value">{moves}</div>
@@ -382,7 +438,7 @@ function GameView({ stage, onComplete }) {
           <div className="win-stats">
             <div className="win-stat">
               <div className="win-stat-value">{formatTime(time)}</div>
-              <div className="win-stat-label">Time</div>
+              <div className="win-stat-label">Time Remaining</div>
             </div>
             <div className="win-stat">
               <div className="win-stat-value">{moves}</div>
@@ -391,6 +447,63 @@ function GameView({ stage, onComplete }) {
           </div>
           {isNewPB && <div className="pb-indicator">🏆 New Personal Best!</div>}
           <button className="win-button" onClick={onComplete}>Continue</button>
+        </div>
+      )}
+
+      {timeExpired && (
+        <div className="time-expired-modal">
+          <div className="time-expired-emoji">⏰</div>
+          <div className="time-expired-title">Time's Up!</div>
+          <p className="time-expired-text">Don't worry, let's try again!</p>
+          <div className="time-expired-actions">
+            <button className="restart-button" onClick={handleRestartPuzzle}>
+              🔄 Restart Puzzle
+            </button>
+            <button className="back-button-modal" onClick={onComplete}>
+              ← Back to Map
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showTutorial && (
+        <div className="tutorial-overlay" onClick={handleCloseTutorial}>
+          <div className="tutorial-modal" onClick={e => e.stopPropagation()}>
+            <div className="tutorial-header">
+              <h2 className="tutorial-title">🎮 How to Play</h2>
+              <button className="close-button" onClick={handleCloseTutorial}>×</button>
+            </div>
+            <div className="tutorial-content">
+              <div className="tutorial-section">
+                <div className="tutorial-icon">🔄</div>
+                <h3>Rotate Pieces</h3>
+                <p>Click on any puzzle piece to rotate it 90° clockwise</p>
+              </div>
+              <div className="tutorial-section">
+                <div className="tutorial-icon">🔀</div>
+                <h3>Swap Positions</h3>
+                <p>Drag and drop pieces to swap their positions</p>
+              </div>
+              <div className="tutorial-section">
+                <div className="tutorial-icon">🎯</div>
+                <h3>Complete the Puzzle</h3>
+                <p>Match all pieces to their correct positions and rotations</p>
+              </div>
+              <div className="tutorial-section">
+                <div className="tutorial-icon">⏱️</div>
+                <h3>Beat the Clock</h3>
+                <p>Easy: 30 seconds | Hard: 60 seconds</p>
+              </div>
+              <div className="tutorial-section">
+                <div className="tutorial-icon">💡</div>
+                <h3>Use Hints</h3>
+                <p>Click the hint button to see the complete image for 3 seconds</p>
+              </div>
+            </div>
+            <button className="tutorial-start-button" onClick={handleCloseTutorial}>
+              Let's Play! 🚀
+            </button>
+          </div>
         </div>
       )}
     </div>
