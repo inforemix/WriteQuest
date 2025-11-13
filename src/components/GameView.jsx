@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import '../styles/GameView.css';
+import { soundManager } from '../utils/sounds';
 
 function GameView({ stage, onComplete }) {
   const [pieces, setPieces] = useState([]);
@@ -11,8 +12,10 @@ function GameView({ stage, onComplete }) {
   const [showHint, setShowHint] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
+  const [justDropped, setJustDropped] = useState(false);
   const timerRef = useRef();
   const hintTimerRef = useRef();
+  const dropTimeoutRef = useRef();
   const gridSize = stage.mode === 'easy' ? 2 : 3;
   const isDraggable = true; // Enable drag-drop for both modes
 
@@ -24,20 +27,32 @@ function GameView({ stage, onComplete }) {
     }
 
     initializePuzzle();
-    timerRef.current = setInterval(() => {
-      setTime(t => {
-        if (t <= 1) {
-          clearInterval(timerRef.current);
-          setTimeExpired(true);
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
+
+    // Show hint for 3 seconds before starting the timer
+    setShowHint(true);
+    hintTimerRef.current = setTimeout(() => {
+      setShowHint(false);
+
+      // Start the timer after hint is hidden
+      timerRef.current = setInterval(() => {
+        setTime(t => {
+          if (t <= 1) {
+            clearInterval(timerRef.current);
+            setTimeExpired(true);
+            return 0;
+          }
+          return t - 1;
+        });
+      }, 1000);
+    }, 3000);
+
     return () => {
       clearInterval(timerRef.current);
       if (hintTimerRef.current) {
         clearTimeout(hintTimerRef.current);
+      }
+      if (dropTimeoutRef.current) {
+        clearTimeout(dropTimeoutRef.current);
       }
     };
   }, []);
@@ -115,21 +130,31 @@ function GameView({ stage, onComplete }) {
     setPieces([...piecesArray]);
   };
 
-  const handleRotate = (originalIndex) => {
+  const handleRotate = (originalIndex, event) => {
+    // Prevent rotation if currently dragging or just dropped
+    if (draggedPiece !== null || justDropped) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return;
+    }
+
     const newPieces = [...pieces];
     // Find the piece by its originalIndex (which never changes)
     const pieceIndex = newPieces.findIndex(p => p.originalIndex === originalIndex);
     const piece = newPieces[pieceIndex];
 
-    // Update logical rotation (for win condition)
+    // Update logical rotation (for win condition) - clockwise only (+90 degrees)
     piece.rotation = (piece.rotation + 90) % 360;
 
-    // Update display rotation (use modulo to prevent accumulation)
+    // Update display rotation (use modulo to prevent accumulation) - clockwise only (+90 degrees)
     piece.displayRotation = (piece.displayRotation + 90) % 360;
 
     setPieces(newPieces);
     setMoves(m => m + 1);
     checkWin(newPieces);
+
+    // Play rotation sound
+    soundManager.playRotate();
 
     // Find the visual index for particles (position in sortedPieces)
     const sortedPieces = [...newPieces].sort((a, b) => a.currentIndex - b.currentIndex);
@@ -142,21 +167,31 @@ function GameView({ stage, onComplete }) {
     setTime(stage.mode === 'easy' ? 30 : 60);
     setMoves(0);
     setIsWon(false);
-    setShowHint(false);
     initializePuzzle();
 
-    // Restart timer
+    // Clear existing timers
     clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setTime(t => {
-        if (t <= 1) {
-          clearInterval(timerRef.current);
-          setTimeExpired(true);
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
+    if (hintTimerRef.current) {
+      clearTimeout(hintTimerRef.current);
+    }
+
+    // Show hint for 3 seconds before starting the timer
+    setShowHint(true);
+    hintTimerRef.current = setTimeout(() => {
+      setShowHint(false);
+
+      // Start the timer after hint is hidden
+      timerRef.current = setInterval(() => {
+        setTime(t => {
+          if (t <= 1) {
+            clearInterval(timerRef.current);
+            setTimeExpired(true);
+            return 0;
+          }
+          return t - 1;
+        });
+      }, 1000);
+    }, 3000);
   };
 
   const handleDragStart = (index, visualIndex) => {
@@ -172,6 +207,9 @@ function GameView({ stage, onComplete }) {
   const handleDrop = (targetIndex) => {
     if (!isDraggable || draggedPiece === null) return;
 
+    // Play drop sound
+    soundManager.playDrop();
+
     const newPieces = [...pieces];
     const draggedIdx = newPieces.findIndex(p => p.currentIndex === draggedPiece);
     const targetIdx = newPieces.findIndex(p => p.currentIndex === targetIndex);
@@ -184,11 +222,29 @@ function GameView({ stage, onComplete }) {
     setDraggedFromIndex(null);
     setMoves(m => m + 1);
     checkWin(newPieces);
+
+    // Prevent clicks immediately after drop
+    setJustDropped(true);
+    if (dropTimeoutRef.current) {
+      clearTimeout(dropTimeoutRef.current);
+    }
+    dropTimeoutRef.current = setTimeout(() => {
+      setJustDropped(false);
+    }, 200); // 200ms delay to prevent accidental rotation after drop
   };
 
   const handleDragEnd = () => {
     setDraggedPiece(null);
     setDraggedFromIndex(null);
+
+    // Also set justDropped flag in case drop didn't fire
+    setJustDropped(true);
+    if (dropTimeoutRef.current) {
+      clearTimeout(dropTimeoutRef.current);
+    }
+    dropTimeoutRef.current = setTimeout(() => {
+      setJustDropped(false);
+    }, 200);
   };
 
   const handleShowHint = () => {
@@ -220,6 +276,9 @@ function GameView({ stage, onComplete }) {
       clearInterval(timerRef.current);
       setIsWon(true);
       showConfetti();
+
+      // Play win sound
+      soundManager.playWin();
 
       // Save personal best time
       const key = `pb-${stage.mode}-${stage.id}`;
@@ -427,9 +486,10 @@ function GameView({ stage, onComplete }) {
                   ${isDropTarget ? 'drop-target' : ''}`}
                 style={{
                   backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
-                  transform: `rotate(${piece.displayRotation}deg)`
+                  transform: isBeingDragged ? 'scale(1.15)' : `rotate(${piece.displayRotation}deg)`,
+                  transition: isBeingDragged ? 'none' : undefined
                 }}
-                onClick={() => handleRotate(piece.originalIndex)}
+                onClick={(e) => handleRotate(piece.originalIndex, e)}
                 draggable={isDraggable}
                 onDragStart={() => handleDragStart(piece.currentIndex, index)}
                 onDragOver={handleDragOver}
@@ -472,8 +532,8 @@ function GameView({ stage, onComplete }) {
       {timeExpired && (
         <div className="time-expired-modal">
           <div className="time-expired-emoji">⏰</div>
-          <div className="time-expired-title">Time's Up!</div>
-          <p className="time-expired-text">Don't worry, let's try again!</p>
+          <div className="time-expired-title">Time&apos;s Up!</div>
+          <p className="time-expired-text">Don&apos;t worry, let&apos;s try again!</p>
           <div className="time-expired-actions">
             <button className="restart-button" onClick={handleRestartPuzzle}>
               🔄 Restart Puzzle
@@ -520,7 +580,7 @@ function GameView({ stage, onComplete }) {
               </div>
             </div>
             <button className="tutorial-start-button" onClick={handleCloseTutorial}>
-              Let's Play! 🚀
+              Let&apos;s Play! 🚀
             </button>
           </div>
         </div>

@@ -36,14 +36,16 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
         id: Date.now(),
         name: stageData.name,
         image: stageData.image,
-        mode: 'easy'
+        mode: 'easy',
+        difficulty: stageData.difficulty || 3
       };
 
       const hardStage = {
         id: Date.now() + 1,
         name: stageData.name,
         image: stageData.image,
-        mode: 'hard'
+        mode: 'hard',
+        difficulty: stageData.difficulty || 3
       };
 
       newStages.push(easyStage, hardStage);
@@ -53,7 +55,8 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
         id: Date.now(),
         name: stageData.name,
         image: stageData.image,
-        mode: stageData.mode
+        mode: stageData.mode,
+        difficulty: stageData.difficulty || 3
       };
       newStages.push(newStage);
     }
@@ -166,8 +169,17 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 <img src={stage.image} alt={stage.name} className="stage-preview" />
                 <div className="stage-info">
                   <div className="stage-name">{stage.name}</div>
-                  <div className={`difficulty-badge ${stage.mode}`}>
-                    {stage.mode === 'easy' ? '2×2' : '3×3'}
+                  <div className="stage-meta">
+                    <div className={`difficulty-badge ${stage.mode}`}>
+                      {stage.mode === 'easy' ? '2×2' : '3×3'}
+                    </div>
+                    <div className="star-display">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span key={i} className={i < (stage.difficulty || 3) ? 'star-filled' : 'star-empty'}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="stage-actions">

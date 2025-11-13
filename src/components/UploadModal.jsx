@@ -6,6 +6,7 @@ function UploadModal({ defaultMode, onClose, onSave }) {
   const [selectedMode, setSelectedMode] = useState(defaultMode);
   const [image, setImage] = useState(null);
   const [applyToBoth, setApplyToBoth] = useState(false);
+  const [difficulty, setDifficulty] = useState(3); // 1-5 star rating
   const fileInputRef = useRef();
 
   const handleImageUpload = (e) => {
@@ -29,7 +30,8 @@ function UploadModal({ defaultMode, onClose, onSave }) {
       name: stageName,
       image: image,
       mode: selectedMode,
-      applyToBoth: applyToBoth
+      applyToBoth: applyToBoth,
+      difficulty: difficulty
     });
   };
 
@@ -67,7 +69,7 @@ function UploadModal({ defaultMode, onClose, onSave }) {
 
         {!applyToBoth && (
           <div className="form-group">
-            <label className="form-label">Difficulty</label>
+            <label className="form-label">Mode</label>
             <select
               className="form-select"
               value={selectedMode}
@@ -78,6 +80,28 @@ function UploadModal({ defaultMode, onClose, onSave }) {
             </select>
           </div>
         )}
+
+        <div className="form-group">
+          <label className="form-label">Difficulty Rating</label>
+          <div className="star-rating">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                className={`star ${star <= difficulty ? 'active' : ''}`}
+                onClick={() => setDifficulty(star)}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <div className="difficulty-label">
+            {difficulty === 1 && 'Very Easy'}
+            {difficulty === 2 && 'Easy'}
+            {difficulty === 3 && 'Medium'}
+            {difficulty === 4 && 'Hard'}
+            {difficulty === 5 && 'Very Hard'}
+          </div>
+        </div>
 
         <div className="form-group">
           <label className="form-label">Upload Image</label>

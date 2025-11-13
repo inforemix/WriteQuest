@@ -109,9 +109,6 @@
 }
 
 .stage-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 15px;
 }
 
@@ -119,6 +116,34 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: #111827;
+  margin-bottom: 8px;
+}
+
+.stage-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.star-display {
+  display: flex;
+  gap: 2px;
+}
+
+.star-filled,
+.star-empty {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.star-filled {
+  color: #fbbf24;
+  text-shadow: 0 0 4px rgba(251, 191, 36, 0.3);
+}
+
+.star-empty {
+  color: #d1d5db;
 }
 
 .stage-actions {

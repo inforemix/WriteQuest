@@ -201,3 +201,33 @@
   background: #d1d5db;
   cursor: not-allowed;
 }
+
+.star-rating {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.star {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #d1d5db;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.star.active {
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.difficulty-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}

@@ -1,37 +1,55 @@
+import { useState } from 'react';
 import '../styles/HomePage.css';
+import { soundManager } from '../utils/sounds';
+import SettingsMenu from './SettingsMenu';
 
 function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
+  const [showSettings, setShowSettings] = useState(false);
+
+  const handleModeSelect = (mode) => {
+    soundManager.playClick();
+    onModeSelect(mode);
+  };
+
   return (
     <div className="map-home">
+      <div className="home-content">
+        <img src="/title.png" alt="Write Aqua" className="game-title-image" />
+
+        <div className="character-background"></div>
+
+        <div className="button-stack">
+          <img
+            src="/Light Wood-easy.png"
+            alt="Easy"
+            className="wood-button clickable"
+            onClick={() => handleModeSelect('easy')}
+          />
+          <img
+            src="/Light Wood-hard.png"
+            alt="Hard"
+            className="wood-button clickable"
+            onClick={() => handleModeSelect('hard')}
+          />
+        </div>
+      </div>
+
+      <div className="version-badge">v0.2</div>
+
       <button
-        className={`admin-toggle ${isAdmin ? 'active' : ''}`}
-        onClick={() => setIsAdmin(!isAdmin)}
+        className="settings-button"
+        onClick={() => setShowSettings(true)}
+        title="Settings"
       >
-        {isAdmin ? '🔐 Admin Mode' : '👤 Player Mode'}
+        <img src="/setting.png" alt="Settings" className="button-icon" />
       </button>
 
-      <div className="clouds">
-        <div className="cloud cloud-1"></div>
-        <div className="cloud cloud-2"></div>
-        <div className="cloud cloud-3"></div>
-      </div>
-
-      <div className="game-title">
-        <h1>PUZZLE QUEST</h1>
-        <p>Choose Your Adventure</p>
-      </div>
-
-      <div className="mode-selector">
-        <div className="mode-node" onClick={() => onModeSelect('easy')}>
-          <div className="node-circle">🌟</div>
-          <div className="mode-label">Easy Mode</div>
-        </div>
-
-        <div className="mode-node" onClick={() => onModeSelect('hard')}>
-          <div className="node-circle">🔥</div>
-          <div className="mode-label">Hard Mode</div>
-        </div>
-      </div>
+      <SettingsMenu
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        isAdmin={isAdmin}
+        setIsAdmin={setIsAdmin}
+      />
     </div>
   );
 }
