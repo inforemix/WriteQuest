@@ -17,7 +17,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/Home-graphic.png');
+    background-image: url('/UI/Home-graphic.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -26,7 +26,7 @@
   }
 }
 
-/* Tablet and Mobile: Gradient background */
+/* Tablet and Mobile: Mobile graphic background */
 @media (max-width: 1023px) {
   .map-home {
     position: relative;
@@ -36,6 +36,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .map-home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/UI/mobile-graphic.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    z-index: 0;
   }
 }
 
@@ -122,6 +137,7 @@
     max-width: 100%;
     width: 100%;
     z-index: 1;
+    transform: translateY(-80px);
   }
 }
 
@@ -137,6 +153,7 @@
     max-width: 600px;
     width: 100%;
     z-index: 1;
+    transform: translateY(-80px);
   }
 }
 

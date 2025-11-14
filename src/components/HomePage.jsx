@@ -14,19 +14,19 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   return (
     <div className="map-home">
       <div className="home-content">
-        <img src="/title.png" alt="Write Aqua" className="game-title-image" />
+        <img src="/UI/title.png" alt="Write Aqua" className="game-title-image" />
 
         <div className="character-background"></div>
 
         <div className="button-stack">
           <img
-            src="/Light Wood-easy.png"
+            src="/UI/Light Wood-easy.png"
             alt="Easy"
             className="wood-button clickable"
             onClick={() => handleModeSelect('easy')}
           />
           <img
-            src="/Light Wood-hard.png"
+            src="/UI/Light Wood-hard.png"
             alt="Hard"
             className="wood-button clickable"
             onClick={() => handleModeSelect('hard')}
@@ -41,7 +41,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         onClick={() => setShowSettings(true)}
         title="Settings"
       >
-        <img src="/setting.png" alt="Settings" className="button-icon" />
+        <img src="/UI/setting.png" alt="Settings" className="button-icon" />
       </button>
 
       <SettingsMenu

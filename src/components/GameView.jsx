@@ -531,7 +531,9 @@ function GameView({ stage, onComplete }) {
       <canvas id="confetti-canvas"></canvas>
 
       <div className="game-header">
-        <button className="back-button" onClick={onComplete}>← Back</button>
+        <button className="back-button" onClick={onComplete}>
+          <img src="/UI/back.png" alt="Back" className="back-icon" />
+        </button>
 
         <div className="game-stats-row">
           <div className="stat-compact">
@@ -570,7 +572,8 @@ function GameView({ stage, onComplete }) {
             onClick={handleShowHint}
             disabled={showHint || isWon || hintCount >= 2}
           >
-            💡 Hint ({2 - hintCount})
+            <img src="/UI/hint-btn.png" alt="Hint" className="hint-icon" />
+            <span>{2 - hintCount}</span>
           </button>
         </div>
       </div>
@@ -605,6 +608,8 @@ function GameView({ stage, onComplete }) {
             );
           })}
         </div>
+
+        <h2 className="stage-title">{stage.name}</h2>
 
         {showHint && (
           <div className="hint-overlay">

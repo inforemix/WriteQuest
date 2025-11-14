@@ -112,7 +112,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     <div className="map-view">
       <div className="map-header">
         <button className="back-button" onClick={onBack}>
-          ← Back
+          <img src="/UI/back.png" alt="Back" className="back-icon" />
         </button>
         {totalStages > 0 && (
           <div className="progress-unified">
