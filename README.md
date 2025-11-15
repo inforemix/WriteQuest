@@ -69,6 +69,42 @@ npm run dev
 - `npm run preview` - Preview the production build
 - `npm run lint` - Run ESLint to check code quality
 
+## 🚀 Deployment to GitHub Pages
+
+This project is configured to automatically deploy to GitHub Pages when you push to the main branch.
+
+### Setup Instructions:
+
+1. **Enable GitHub Pages in your repository:**
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Pages**
+   - Under **Source**, select **GitHub Actions**
+
+2. **Push your code:**
+   ```bash
+   git add .
+   git commit -m "Add GitHub Pages deployment"
+   git push origin main
+   ```
+
+3. **Wait for deployment:**
+   - The GitHub Action will automatically build and deploy your app
+   - You can monitor the progress in the **Actions** tab
+   - Once complete, your app will be available at: `https://<your-username>.github.io/WriteAqua/`
+
+### Manual Deployment:
+
+You can also trigger a deployment manually:
+- Go to the **Actions** tab in your repository
+- Select the **Deploy to GitHub Pages** workflow
+- Click **Run workflow**
+
+### Configuration Notes:
+
+- The app is configured with `base: '/WriteAqua/'` in `vite.config.js`
+- If you rename the repository, update the `base` path accordingly
+- The workflow is located at `.github/workflows/deploy.yml`
+
 ## 📁 Project Structure
 
 ```
