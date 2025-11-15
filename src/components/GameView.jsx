@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import '../styles/GameView.css';
 import { soundManager } from '../utils/sounds';
+import { getAssetPath } from '../utils/assets';
 
 function GameView({ stage, onComplete }) {
   const [pieces, setPieces] = useState([]);
@@ -532,7 +533,7 @@ function GameView({ stage, onComplete }) {
 
       <div className="game-header">
         <button className="back-button" onClick={onComplete}>
-          <img src="/UI/back.png" alt="Back" className="back-icon" />
+          <img src={getAssetPath('UI/back.png')} alt="Back" className="back-icon" />
         </button>
 
         <div className="game-stats-row">
@@ -572,7 +573,7 @@ function GameView({ stage, onComplete }) {
             onClick={handleShowHint}
             disabled={showHint || isWon || hintCount >= 2}
           >
-            <img src="/UI/hint-btn.png" alt="Hint" className="hint-icon" />
+            <img src={getAssetPath('UI/hint-btn.png')} alt="Hint" className="hint-icon" />
             <span>{2 - hintCount}</span>
           </button>
         </div>

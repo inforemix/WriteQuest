@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../styles/HomePage.css';
 import { soundManager } from '../utils/sounds';
+import { getAssetPath } from '../utils/assets';
 import SettingsMenu from './SettingsMenu';
 
 function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
@@ -14,19 +15,19 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   return (
     <div className="map-home">
       <div className="home-content">
-        <img src="/UI/title.png" alt="Write Aqua" className="game-title-image" />
+        <img src={getAssetPath('UI/title.png')} alt="Write Aqua" className="game-title-image" />
 
         <div className="character-background"></div>
 
         <div className="button-stack">
           <img
-            src="/UI/Light Wood-easy.png"
+            src={getAssetPath('UI/Light Wood-easy.png')}
             alt="Easy"
             className="wood-button clickable"
             onClick={() => handleModeSelect('easy')}
           />
           <img
-            src="/UI/Light Wood-hard.png"
+            src={getAssetPath('UI/Light Wood-hard.png')}
             alt="Hard"
             className="wood-button clickable"
             onClick={() => handleModeSelect('hard')}
@@ -41,7 +42,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         onClick={() => setShowSettings(true)}
         title="Settings"
       >
-        <img src="/UI/setting.png" alt="Settings" className="button-icon" />
+        <img src={getAssetPath('UI/setting.png')} alt="Settings" className="button-icon" />
       </button>
 
       <SettingsMenu

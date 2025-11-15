@@ -17,7 +17,7 @@
   height: 20vh;
   max-height: 180px;
   min-height: 120px;
-  background-image: url('/UI/game-bottom.jpg');
+  background-image: url(/UI/game-bottom.jpg);
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
@@ -26,7 +26,7 @@
 }
 
 .game-header {
-  background-image: url('/UI/wood-nav.jpg');
+  background-image: url(/UI/wood-nav.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -739,7 +739,7 @@
 
   .back-icon {
     height: 45px;
-    content: url('/UI/mobile-bk.png');
+    content: url(/UI/mobile-bk.png);
   }
 
   .header-actions {
@@ -748,7 +748,7 @@
 
   .hint-icon {
     height: 45px;
-    content: url('/UI/mobile-hint.png');
+    content: url(/UI/mobile-hint.png);
   }
 
   .hint-button span {
@@ -815,12 +815,12 @@
 
   .back-icon {
     height: 40px;
-    content: url('/UI/mobile-bk.png');
+    content: url(/UI/mobile-bk.png);
   }
 
   .hint-icon {
     height: 40px;
-    content: url('/UI/mobile-hint.png');
+    content: url(/UI/mobile-hint.png);
   }
 
   .hint-button span {

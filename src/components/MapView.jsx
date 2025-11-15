@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import UploadModal from './UploadModal';
+import { getAssetPath } from '../utils/assets';
 import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate }) {
@@ -112,7 +113,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     <div className="map-view">
       <div className="map-header">
         <button className="back-button" onClick={onBack}>
-          <img src="/UI/back.png" alt="Back" className="back-icon" />
+          <img src={getAssetPath('UI/back.png')} alt="Back" className="back-icon" />
         </button>
         {totalStages > 0 && (
           <div className="progress-unified">
