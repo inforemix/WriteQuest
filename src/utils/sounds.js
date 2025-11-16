@@ -10,15 +10,29 @@ class SoundManager {
     this.audioContext = null;
     this.sounds = {};
 
+    // Background music properties
+    this.musicEnabled = true;
+    this.musicVolume = 0.3;
+    this.backgroundMusic = null;
+    this.musicGainNode = null;
+
     // Load saved preferences
     const savedVolume = localStorage.getItem('soundVolume');
     const savedEnabled = localStorage.getItem('soundEnabled');
+    const savedMusicEnabled = localStorage.getItem('musicEnabled');
+    const savedMusicVolume = localStorage.getItem('musicVolume');
 
     if (savedVolume !== null) {
       this.volume = parseFloat(savedVolume);
     }
     if (savedEnabled !== null) {
       this.enabled = savedEnabled === 'true';
+    }
+    if (savedMusicEnabled !== null) {
+      this.musicEnabled = savedMusicEnabled === 'true';
+    }
+    if (savedMusicVolume !== null) {
+      this.musicVolume = parseFloat(savedMusicVolume);
     }
   }
 
@@ -303,6 +317,109 @@ class SoundManager {
     this.enabled = !this.enabled;
     localStorage.setItem('soundEnabled', this.enabled.toString());
     return this.enabled;
+  }
+
+  /**
+   * Start background music
+   */
+  async startBackgroundMusic() {
+    if (!this.musicEnabled) return;
+
+    try {
+      this.init();
+      if (!this.audioContext) return;
+
+      // Create audio element if not exists
+      if (!this.backgroundMusic) {
+        this.backgroundMusic = new Audio('/WAqua-music.mp3');
+        this.backgroundMusic.loop = true;
+
+        // Create gain node for volume control
+        const source = this.audioContext.createMediaElementSource(this.backgroundMusic);
+        this.musicGainNode = this.audioContext.createGain();
+        source.connect(this.musicGainNode);
+        this.musicGainNode.connect(this.audioContext.destination);
+
+        // Set initial volume
+        this.musicGainNode.gain.value = this.musicVolume;
+      }
+
+      // Play music
+      await this.backgroundMusic.play();
+    } catch (error) {
+      console.error('Error starting background music:', error);
+    }
+  }
+
+  /**
+   * Stop background music
+   */
+  stopBackgroundMusic() {
+    if (this.backgroundMusic) {
+      this.backgroundMusic.pause();
+      this.backgroundMusic.currentTime = 0;
+    }
+  }
+
+  /**
+   * Pause background music
+   */
+  pauseBackgroundMusic() {
+    if (this.backgroundMusic) {
+      this.backgroundMusic.pause();
+    }
+  }
+
+  /**
+   * Resume background music
+   */
+  resumeBackgroundMusic() {
+    if (this.backgroundMusic && this.musicEnabled) {
+      this.backgroundMusic.play().catch(error => {
+        console.error('Error resuming background music:', error);
+      });
+    }
+  }
+
+  /**
+   * Set music volume
+   */
+  setMusicVolume(value) {
+    this.musicVolume = Math.max(0, Math.min(1, value));
+    if (this.musicGainNode) {
+      this.musicGainNode.gain.value = this.musicVolume;
+    }
+    localStorage.setItem('musicVolume', this.musicVolume.toString());
+  }
+
+  /**
+   * Set music enabled state
+   */
+  setMusicEnabled(enabled) {
+    this.musicEnabled = enabled;
+    localStorage.setItem('musicEnabled', enabled.toString());
+
+    if (enabled) {
+      this.startBackgroundMusic();
+    } else {
+      this.pauseBackgroundMusic();
+    }
+  }
+
+  /**
+   * Toggle music on/off
+   */
+  toggleMusic() {
+    this.musicEnabled = !this.musicEnabled;
+    localStorage.setItem('musicEnabled', this.musicEnabled.toString());
+
+    if (this.musicEnabled) {
+      this.startBackgroundMusic();
+    } else {
+      this.pauseBackgroundMusic();
+    }
+
+    return this.musicEnabled;
   }
 }
 

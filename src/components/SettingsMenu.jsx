@@ -7,6 +7,8 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
   const { language, changeLanguage, t } = useLanguage();
   const [volume, setVolume] = useState(soundManager.volume * 100);
   const [soundEnabled, setSoundEnabled] = useState(soundManager.enabled);
+  const [musicVolume, setMusicVolume] = useState(soundManager.musicVolume * 100);
+  const [musicEnabled, setMusicEnabled] = useState(soundManager.musicEnabled);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Sync state when menu opens
@@ -14,6 +16,8 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
     if (isOpen) {
       setVolume(soundManager.volume * 100);
       setSoundEnabled(soundManager.enabled);
+      setMusicVolume(soundManager.musicVolume * 100);
+      setMusicEnabled(soundManager.musicEnabled);
     }
   }, [isOpen]);
 
@@ -31,6 +35,17 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
   const handleSoundToggle = () => {
     const newState = soundManager.toggle();
     setSoundEnabled(newState);
+  };
+
+  const handleMusicVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    setMusicVolume(newVolume);
+    soundManager.setMusicVolume(newVolume / 100);
+  };
+
+  const handleMusicToggle = () => {
+    const newState = soundManager.toggleMusic();
+    setMusicEnabled(newState);
   };
 
   const handleLanguageChange = (lang) => {
@@ -81,11 +96,10 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
         <div className="settings-content">
           {/* Mode Section */}
           <div className="settings-section">
-            <h3 className="section-title">{t('adminMode')}</h3>
-
+            <h3 className="section-title">Admin Mode</h3>
             <div className="setting-item">
               <label className="setting-label">
-                <span>{isAdmin ? '🔐 ' + t('adminMode') : '👤 ' + t('adminMode')}</span>
+                <span>Able to add, delete, and reorder stages</span>
                 <button
                   className={`toggle-switch ${isAdmin ? 'active' : ''}`}
                   onClick={() => setIsAdmin(!isAdmin)}
@@ -94,17 +108,14 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
                   <span className="toggle-slider"></span>
                 </button>
               </label>
-              <p className="setting-description">{t('adminModeDesc')}</p>
             </div>
           </div>
 
           {/* Sound Section */}
           <div className="settings-section">
-            <h3 className="section-title">{t('soundEffects')}</h3>
-
             <div className="setting-item">
               <label className="setting-label">
-                <span>{t('soundEffects')}</span>
+                <span>Enable sound effects</span>
                 <button
                   className={`toggle-switch ${soundEnabled ? 'active' : ''}`}
                   onClick={handleSoundToggle}
@@ -113,7 +124,56 @@ function SettingsMenu({ isOpen, onClose, isAdmin, setIsAdmin }) {
                   <span className="toggle-slider"></span>
                 </button>
               </label>
-              <p className="setting-description">{t('soundEffectsDesc')}</p>
+            </div>
+
+            <div className="setting-item">
+              <label className="setting-label">
+                <span>Volume</span>
+                <span className="volume-value">{Math.round(volume)}%</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onChange={handleVolumeChange}
+                disabled={!soundEnabled}
+                className="volume-slider"
+                style={{ '--value': `${volume}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Music Section */}
+          <div className="settings-section">
+            <div className="setting-item">
+              <label className="setting-label">
+                <span>Enable background music</span>
+                <button
+                  className={`toggle-switch ${musicEnabled ? 'active' : ''}`}
+                  onClick={handleMusicToggle}
+                  aria-label="Toggle music"
+                >
+                  <span className="toggle-slider"></span>
+                </button>
+              </label>
+            </div>
+
+            <div className="setting-item">
+              <label className="setting-label">
+                <span>Music Volume</span>
+                <span className="volume-value">{Math.round(musicVolume)}%</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={musicVolume}
+                onChange={handleMusicVolumeChange}
+                disabled={!musicEnabled}
+                className="volume-slider"
+                style={{ '--value': `${musicVolume}%` }}
+              />
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/HomePage.css';
 import { soundManager } from '../utils/sounds';
 import { getAssetPath } from '../utils/assets';
@@ -8,6 +8,11 @@ import SettingsMenu from './SettingsMenu';
 function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   const { t } = useLanguage();
   const [showSettings, setShowSettings] = useState(false);
+
+  // Start background music on mount
+  useEffect(() => {
+    soundManager.startBackgroundMusic();
+  }, []);
 
   const handlePlayClick = () => {
     soundManager.playClick();

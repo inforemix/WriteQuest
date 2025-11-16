@@ -148,20 +148,20 @@
 
 .path-line {
   fill: none;
-  stroke: #e8dcc4;
-  stroke-width: 14;
+  stroke: #3498db;
+  stroke-width: 16;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .path-background {
   fill: none;
-  stroke: #d4c4a8;
-  stroke-width: 20;
+  stroke: #2980b9;
+  stroke-width: 22;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.4;
+  opacity: 0.6;
 }
 
 /* Desktop: Show desktop paths, hide mobile paths */
@@ -413,8 +413,8 @@
 }
 
 .progress-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -502,6 +502,7 @@
     max-width: 100%;
     gap: 12px;
     padding: 10px 16px;
+    margin-right: 30px;
   }
 
   .progress-circle svg {
@@ -510,7 +511,7 @@
   }
 
   .progress-label {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .progress-numbers {
@@ -528,6 +529,15 @@
     border-radius: 0;
     border: none;
     outline: none;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .progress-unified {
+    margin-right: 0;
+    gap: 8px;
+    padding: 8px 12px;
+    max-width: 200px;
   }
 
   .map-container {
@@ -552,8 +562,16 @@
   }
 
   .back-button {
-    padding: 8px 16px;
+    padding: 6px 12px;
     font-size: 0.9rem;
+  }
+
+  .back-icon {
+    height: 32px;
+  }
+
+  .mode-toggle-button {
+    height: 42px;
   }
 
   .floating-add-button {

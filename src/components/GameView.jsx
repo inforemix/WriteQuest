@@ -8,46 +8,74 @@ function GameView({ stage, onComplete }) {
   const { t } = useLanguage();
   const [pieces, setPieces] = useState([]);
   const [moves, setMoves] = useState(0);
-  const [time, setTime] = useState(stage.mode === 'easy' ? 30 : 60);
+  const [time, setTime] = useState(stage.mode === 'easy' ? 20 : 50);
   const [isWon, setIsWon] = useState(false);
+  const [moveLimitExceeded, setMoveLimitExceeded] = useState(false);
   const [draggedPiece, setDraggedPiece] = useState(null);
   const [draggedFromIndex, setDraggedFromIndex] = useState(null);
   const [showHint, setShowHint] = useState(false);
+  const [hintFadingOut, setHintFadingOut] = useState(false);
+  const [hintCountdown, setHintCountdown] = useState(3);
   const [showTutorial, setShowTutorial] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
   const [justDropped, setJustDropped] = useState(false);
   const [hintCount, setHintCount] = useState(0);
   const timerRef = useRef();
   const hintTimerRef = useRef();
+  const hintCountdownRef = useRef();
   const dropTimeoutRef = useRef();
   const gridSize = stage.mode === 'easy' ? 2 : 3;
   const isDraggable = true; // Enable drag-drop for both modes
+  const moveLimit = stage.mode === 'hard' ? 30 : null; // Hard mode has 30 move limit
 
   useEffect(() => {
     initializePuzzle();
 
-    // Show hint for 3 seconds before starting the timer
+    // Show hint immediately with countdown starting at 3
     setShowHint(true);
-    hintTimerRef.current = setTimeout(() => {
-      setShowHint(false);
+    setHintCountdown(3);
 
-      // Start the timer after hint is hidden
-      timerRef.current = setInterval(() => {
-        setTime(t => {
-          if (t <= 1) {
-            clearInterval(timerRef.current);
-            setTimeExpired(true);
-            return 0;
-          }
-          return t - 1;
-        });
-      }, 1000);
-    }, 3000);
+    // Start countdown interval
+    hintCountdownRef.current = setInterval(() => {
+      setHintCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(hintCountdownRef.current);
+          return prev;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Trigger fade-out after 2.7 seconds (before the full 3 seconds)
+    hintTimerRef.current = setTimeout(() => {
+      setHintFadingOut(true);
+
+      // Hide hint after fade-out animation completes (0.3s)
+      setTimeout(() => {
+        setShowHint(false);
+        setHintFadingOut(false);
+
+        // Start the timer after hint is hidden
+        timerRef.current = setInterval(() => {
+          setTime(t => {
+            if (t <= 1) {
+              clearInterval(timerRef.current);
+              setTimeExpired(true);
+              return 0;
+            }
+            return t - 1;
+          });
+        }, 1000);
+      }, 300);
+    }, 2700);
 
     return () => {
       clearInterval(timerRef.current);
       if (hintTimerRef.current) {
         clearTimeout(hintTimerRef.current);
+      }
+      if (hintCountdownRef.current) {
+        clearInterval(hintCountdownRef.current);
       }
       if (dropTimeoutRef.current) {
         clearTimeout(dropTimeoutRef.current);
@@ -136,6 +164,12 @@ function GameView({ stage, onComplete }) {
       return;
     }
 
+    // Check move limit for hard mode
+    if (moveLimit && moves >= moveLimit) {
+      setMoveLimitExceeded(true);
+      return;
+    }
+
     const newPieces = [...pieces];
     // Find the piece by its originalIndex (which never changes)
     const pieceIndex = newPieces.findIndex(p => p.originalIndex === originalIndex);
@@ -157,34 +191,59 @@ function GameView({ stage, onComplete }) {
 
   const handleRestartPuzzle = () => {
     setTimeExpired(false);
-    setTime(stage.mode === 'easy' ? 30 : 60);
+    setMoveLimitExceeded(false);
+    setTime(stage.mode === 'easy' ? 20 : 50);
     setMoves(0);
     setIsWon(false);
     initializePuzzle();
 
-    // Clear existing timers
+    // Clear existing timers and intervals
     clearInterval(timerRef.current);
     if (hintTimerRef.current) {
       clearTimeout(hintTimerRef.current);
     }
+    if (hintCountdownRef.current) {
+      clearInterval(hintCountdownRef.current);
+    }
 
-    // Show hint for 3 seconds before starting the timer
+    // Show hint immediately with countdown starting at 3
     setShowHint(true);
-    hintTimerRef.current = setTimeout(() => {
-      setShowHint(false);
+    setHintFadingOut(false);
+    setHintCountdown(3);
 
-      // Start the timer after hint is hidden
-      timerRef.current = setInterval(() => {
-        setTime(t => {
-          if (t <= 1) {
-            clearInterval(timerRef.current);
-            setTimeExpired(true);
-            return 0;
-          }
-          return t - 1;
-        });
-      }, 1000);
-    }, 3000);
+    // Start countdown interval
+    hintCountdownRef.current = setInterval(() => {
+      setHintCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(hintCountdownRef.current);
+          return prev;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Trigger fade-out after 2.7 seconds (before the full 3 seconds)
+    hintTimerRef.current = setTimeout(() => {
+      setHintFadingOut(true);
+
+      // Hide hint after fade-out animation completes (0.3s)
+      setTimeout(() => {
+        setShowHint(false);
+        setHintFadingOut(false);
+
+        // Start the timer after hint is hidden
+        timerRef.current = setInterval(() => {
+          setTime(t => {
+            if (t <= 1) {
+              clearInterval(timerRef.current);
+              setTimeExpired(true);
+              return 0;
+            }
+            return t - 1;
+          });
+        }, 1000);
+      }, 300);
+    }, 2700);
   };
 
   const handleDragStart = (index, visualIndex) => {
@@ -199,6 +258,14 @@ function GameView({ stage, onComplete }) {
 
   const handleDrop = (targetIndex) => {
     if (!isDraggable || draggedPiece === null) return;
+
+    // Check move limit for hard mode
+    if (moveLimit && moves >= moveLimit) {
+      setMoveLimitExceeded(true);
+      setDraggedPiece(null);
+      setDraggedFromIndex(null);
+      return;
+    }
 
     // Play drop sound
     soundManager.playDrop();
@@ -245,11 +312,32 @@ function GameView({ stage, onComplete }) {
 
     setShowHint(true);
     setHintCount(hintCount + 1);
+    setHintCountdown(3);
 
-    // Hide hint after 3 seconds
+    // Start countdown interval
+    if (hintCountdownRef.current) {
+      clearInterval(hintCountdownRef.current);
+    }
+    hintCountdownRef.current = setInterval(() => {
+      setHintCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(hintCountdownRef.current);
+          return prev;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Trigger fade-out after 2.7 seconds
     hintTimerRef.current = setTimeout(() => {
-      setShowHint(false);
-    }, 3000);
+      setHintFadingOut(true);
+
+      // Hide hint after fade-out animation completes (0.3s)
+      setTimeout(() => {
+        setShowHint(false);
+        setHintFadingOut(false);
+      }, 300);
+    }, 2700);
   };
 
   const handleCloseTutorial = () => {
@@ -561,7 +649,7 @@ function GameView({ stage, onComplete }) {
 
         <div className="header-actions">
           <button className="tutorial-button" onClick={handleShowTutorialAgain}>
-            ❓
+            ?
           </button>
           <button
             className="hint-button"
@@ -608,10 +696,10 @@ function GameView({ stage, onComplete }) {
         <h2 className="stage-title">{stage.name}</h2>
 
         {showHint && (
-          <div className="hint-overlay">
+          <div className={`hint-overlay ${hintFadingOut ? 'hint-fade-out' : ''}`}>
             <div className="hint-image-container">
               <img src={stage.image} alt="Hint" className="hint-image" />
-              <div className="hint-timer">Hint will hide in 3s...</div>
+              <div className="hint-timer">{hintCountdown}</div>
             </div>
           </div>
         )}
@@ -640,6 +728,22 @@ function GameView({ stage, onComplete }) {
           <div className="time-expired-emoji">⏰</div>
           <div className="time-expired-title">{t('timesUp')}</div>
           <p className="time-expired-text">{t('timesUpMessage')}</p>
+          <div className="time-expired-actions">
+            <button className="restart-button" onClick={handleRestartPuzzle}>
+              🔄 {t('restartPuzzle')}
+            </button>
+            <button className="back-button-modal" onClick={onComplete}>
+              ← {t('backToMap')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {moveLimitExceeded && (
+        <div className="time-expired-modal">
+          <div className="time-expired-emoji">🎯</div>
+          <div className="time-expired-title">Move Limit Reached!</div>
+          <p className="time-expired-text">You've used all 30 moves. Try again!</p>
           <div className="time-expired-actions">
             <button className="restart-button" onClick={handleRestartPuzzle}>
               🔄 {t('restartPuzzle')}
