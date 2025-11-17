@@ -31,7 +31,7 @@ export const translations = {
     timesUpMessage: "Don't worry, let's try again!",
     restartPuzzle: 'Restart Puzzle',
     backToMap: 'Back to Map',
-    specialTools: 'Special tools',
+    specialTools: 'New tools coming soon',
 
     // Tutorial
     howToPlay: 'How to Play',
@@ -104,7 +104,7 @@ export const translations = {
     timesUpMessage: '¡No te preocupes, intentémoslo de nuevo!',
     restartPuzzle: 'Reiniciar Rompecabezas',
     backToMap: 'Volver al Mapa',
-    specialTools: 'Herramientas especiales',
+    specialTools: 'Nuevas herramientas próximamente',
 
     // Tutorial
     howToPlay: 'Cómo Jugar',
