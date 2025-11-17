@@ -28,7 +28,13 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   };
 
   return (
-    <div className="map-home">
+    <div
+      className="map-home"
+      style={{
+        '--bg-image': `url(${getAssetPath('UI/Home-graphic.jpg')})`,
+        '--bg-image-mobile': `url(${getAssetPath('UI/mobile-graphic.jpg')})`
+      }}
+    >
       <div className="home-content">
         <img src={getAssetPath('UI/title.png')} alt="Write Aqua" className="game-title-image" />
 

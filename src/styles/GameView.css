@@ -7,7 +7,7 @@
 }
 
 .game-header {
-  background-image: url(/UI/wood-nav.jpg);
+  background-image: var(--wood-nav-bg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -784,7 +784,7 @@
 
   .back-icon {
     height: 45px;
-    content: url(/UI/mobile-bk.png);
+    content: var(--mobile-bk);
   }
 
   .header-actions {
@@ -793,7 +793,7 @@
 
   .hint-icon {
     height: 45px;
-    content: url(/UI/mobile-hint.png);
+    content: var(--mobile-hint);
   }
 
   .hint-button span {
@@ -854,12 +854,12 @@
 
   .back-icon {
     height: 40px;
-    content: url(/UI/mobile-bk.png);
+    content: var(--mobile-bk);
   }
 
   .hint-icon {
     height: 40px;
-    content: url(/UI/mobile-hint.png);
+    content: var(--mobile-hint);
   }
 
   .hint-button span {

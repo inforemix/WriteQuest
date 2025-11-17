@@ -97,7 +97,7 @@
   width: 300px;
   height: 80px;
 
-  background-image: url(/UI/LightWoodpanel.png);
+  background-image: var(--light-wood-panel);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;

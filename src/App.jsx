@@ -4,9 +4,17 @@ import MapView from './components/MapView';
 import GameView from './components/GameView';
 import { defaultStages } from './data/preloadStages';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { getAssetPath } from './utils/assets';
 import './styles/App.css';
 
 function App() {
+  // Set CSS variables for asset paths
+  useEffect(() => {
+    document.documentElement.style.setProperty('--wood-nav-bg', `url(${getAssetPath('UI/wood-nav.jpg')})`);
+    document.documentElement.style.setProperty('--mobile-bk', `url(${getAssetPath('UI/mobile-bk.png')})`);
+    document.documentElement.style.setProperty('--mobile-hint', `url(${getAssetPath('UI/mobile-hint.png')})`);
+    document.documentElement.style.setProperty('--light-wood-panel', `url(${getAssetPath('UI/LightWoodpanel.png')})`);
+  }, []);
   const [screen, setScreen] = useState('home');
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedMode, setSelectedMode] = useState(null);
@@ -14,14 +22,16 @@ function App() {
   const [currentStage, setCurrentStage] = useState(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('stages');
-    if (saved) {
-      setStages(JSON.parse(saved));
-    } else {
-      // Load default stages if nothing is saved
-      setStages(defaultStages);
-      localStorage.setItem('stages', JSON.stringify(defaultStages));
-    }
+    // Always reset to default preloaded stages on app start
+    setStages(defaultStages);
+    localStorage.setItem('stages', JSON.stringify(defaultStages));
+
+    // Clear all completion and personal best data
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('pb-') || key.startsWith('completed-')) {
+        localStorage.removeItem(key);
+      }
+    });
   }, []);
 
   const saveStages = (newStages) => {
