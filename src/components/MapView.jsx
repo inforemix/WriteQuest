@@ -10,8 +10,13 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [hoveredStageId, setHoveredStageId] = useState(null);
 
   useEffect(() => {
+    // Set sky background CSS variable
+    const skyBgUrl = getAssetPath('UI/sky-bg.jpg');
+    document.documentElement.style.setProperty('--sky-bg', `url(${skyBgUrl})`);
+
     // Check if user has seen the tutorial
     const hasSeenTutorial = localStorage.getItem('hasSeenMapTutorial');
     if (!hasSeenTutorial) {
@@ -369,6 +374,8 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, stage.id)}
                 onDragEnd={handleDragEnd}
+                onMouseEnter={() => setHoveredStageId(stage.id)}
+                onMouseLeave={() => setHoveredStageId(null)}
               >
                 <div style={{ position: 'relative' }}>
                   {completed && (
@@ -401,6 +408,21 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </div>
             );
           })
+        )}
+
+        {/* Drone Animation - appears on hover */}
+        {hoveredStageId && (
+          <div className="drone-container active">
+            <img
+              src={getAssetPath('UI/drone.png')}
+              alt="Drone"
+              className="drone-image"
+              onError={(e) => {
+                // Hide drone if image doesn't exist yet
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
         )}
       </div>
 
