@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Write Quest is a React-based puzzle game featuring map-based progression, two difficulty modes (Easy: 2×2 grid, Hard: 3×3 grid), and an admin mode for creating custom stages. The game uses Canvas API for image slicing, WebGL shaders for confetti effects, and localStorage for data persistence.
+**Version: 0.5.0**
+
+Write Quest is a React-based Chinese character learning puzzle game featuring map-based progression with two difficulty modes:
+- **Basic Mode** (Easy: 2×2 grid): 20 fundamental Chinese characters (木 水 火 山 雨 日 土 月 人 天 大 女 田 心 男 石 光 兄 父 妹)
+- **Advanced Mode** (Hard: 3×3 grid): 20 complex Chinese characters (海 春 夏 秋 冬 學 善 美 愛 危 風 星 快 毒 島 電 燒 寫 飛 慢)
+
+The game uses Canvas API for image slicing, WebGL shaders for confetti effects, and localStorage for data persistence. Each puzzle features a Chinese character with its English translation, making it an educational tool for learning Chinese characters through visual puzzles.
 
 ## Development Commands
 
@@ -41,16 +47,16 @@ The app uses a single-direction state flow managed in `App.jsx`:
 1. **App.jsx** - Root component managing global state:
    - `screen`: Controls view navigation ('home', 'map', 'game')
    - `isAdmin`: Toggles admin mode for stage creation/deletion
-   - `selectedMode`: Current difficulty ('easy' or 'hard')
-   - `stages`: Array of all stages, persisted to localStorage
-   - `currentStage`: Currently playing stage
+   - `selectedMode`: Current difficulty ('easy' for Basic, 'hard' for Advanced)
+   - `stages`: Array of all stages with Chinese characters, persisted to localStorage
+   - `currentStage`: Currently playing Chinese character puzzle
 
 2. **Component Hierarchy**:
    ```
    App
-   ├─ HomePage (mode selection, admin toggle)
-   ├─ MapView (stage list, upload modal, drag-to-reorder)
-   └─ GameView (puzzle gameplay, timer, moves, confetti)
+   ├─ HomePage (Basic/Advanced mode selection, admin toggle)
+   ├─ MapView (character stage list, stage selection, progress tracking)
+   └─ GameView (puzzle gameplay with Chinese characters, timer, moves, confetti)
    ```
 
 ### Data Persistence Strategy
@@ -65,10 +71,13 @@ All game data is stored in browser localStorage:
 Stage objects have this structure:
 ```javascript
 {
-  id: timestamp,
-  name: string,
-  image: base64DataURL,
-  mode: 'easy' | 'hard'
+  id: number,                    // Unique ID (1001-1020 for Basic, 2001-2020 for Advanced)
+  name: string,                  // Display name with Chinese and English (e.g., '木 (Wood)')
+  chinese: string,               // Chinese character (e.g., '木')
+  english: string,               // English translation (e.g., 'Wood')
+  image: string,                 // Asset path to character puzzle image
+  mode: 'easy' | 'hard',        // 'easy' for Basic, 'hard' for Advanced
+  difficulty: 1 | 2 | 3          // Difficulty level within the mode
 }
 ```
 
@@ -124,10 +133,26 @@ Key functions in GameView.jsx:
 ### Changing Game Difficulty
 
 Grid size is determined by `stage.mode`:
-- Easy: `gridSize = 2` (4 pieces)
-- Hard: `gridSize = 3` (9 pieces)
+- **Basic Mode** (Easy): `gridSize = 2` (4 pieces) - 20 fundamental Chinese characters
+- **Advanced Mode** (Hard): `gridSize = 3` (9 pieces) - 20 complex Chinese characters
 
-Both modes now support drag-and-drop (`isDraggable = true` on line 17).
+Both modes support drag-and-drop piece swapping for enhanced gameplay.
+
+### Character Sets (v0.5)
+
+The game features 40 Chinese characters total:
+
+**Basic Mode (20 characters):**
+木 水 火 山 雨 日 土 月 人 天 大 女 田 心 男 石 光 兄 父 妹
+
+**Advanced Mode (20 characters):**
+海 春 夏 秋 冬 學 善 美 愛 危 風 星 快 毒 島 電 燒 寫 飛 慢
+
+Each character has:
+- A puzzle image in `/public/puzzles/easy/` or `/public/puzzles/hard/`
+- Chinese character display
+- English translation
+- Difficulty level (1-3) within its mode
 
 ### localStorage Management
 
@@ -169,3 +194,50 @@ This eliminates need for file hosting but limits total stages to localStorage qu
 - Functions: camelCase (handleModeSelect)
 - Constants: UPPER_SNAKE_CASE if truly constant
 - CSS classes: kebab-case (puzzle-piece)
+
+## Version 0.5 Features
+
+### Character-Based Learning System
+
+Write Quest v0.5 introduces a comprehensive Chinese character learning system:
+
+1. **Structured Progression**:
+   - 20 Basic characters for beginners
+   - 20 Advanced characters for intermediate learners
+   - Each character includes visual puzzle and English translation
+
+2. **Audio Support** (Planned):
+   - Character pronunciation audio files in `/public/audio/`
+   - MP3 format for each Chinese character
+   - Playback on puzzle completion or hint button
+
+3. **Enhanced Visual Experience**:
+   - Scene fade animations (dark → ocean transitions)
+   - Puzzle pieces disabled after successful completion
+   - Mobile-optimized vertical layout
+   - Confetti effects on puzzle solve
+
+4. **Authentication** (Planned):
+   - Guest mode for instant play
+   - Google OAuth integration for progress tracking
+   - Cloud save functionality for cross-device play
+
+5. **Asset Organization**:
+   - UI assets in `/public/UI/`
+   - Character puzzles in `/public/puzzles/easy/` and `/public/puzzles/hard/`
+   - Background music: `/public/WAqua-music.mp3`
+   - Shop items in `/public/puzzles/shop/`
+
+### Missing Assets
+
+Some characters currently use placeholder images. The following puzzle images need to be added:
+
+**Basic Mode (8 missing):**
+- 大 (Big), 女 (Woman), 田 (Field), 心 (Heart), 男 (Man), 兄 (Elder Brother), 父 (Father), 妹 (Younger Sister)
+
+**Advanced Mode (9 missing):**
+- 學 (Study), 風 (Wind), 快 (Fast), 毒 (Poison), 電 (Electricity), 燒 (Burn), 寫 (Write), 飛 (Fly), 慢 (Slow)
+
+When adding new character images, place them in:
+- `/public/puzzles/easy/[english-name].jpg` for Basic characters
+- `/public/puzzles/hard/[english-name].jpg` for Advanced characters
