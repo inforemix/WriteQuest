@@ -98,7 +98,7 @@ export const basicStages = [
     name: '大 (Big)',
     chinese: '大',
     english: 'Big',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/big.jpg'),
     mode: 'easy',
     difficulty: 2
   },
@@ -107,7 +107,7 @@ export const basicStages = [
     name: '女 (Woman)',
     chinese: '女',
     english: 'Woman',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/daughter.jpg'),
     mode: 'easy',
     difficulty: 2
   },
@@ -116,7 +116,7 @@ export const basicStages = [
     name: '田 (Field)',
     chinese: '田',
     english: 'Field',
-    image: getAssetPath('puzzles/easy/ground.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/rice field.jpg'),
     mode: 'easy',
     difficulty: 2
   },
@@ -125,7 +125,7 @@ export const basicStages = [
     name: '心 (Heart)',
     chinese: '心',
     english: 'Heart',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/Heart.jpg'),
     mode: 'easy',
     difficulty: 2
   },
@@ -134,7 +134,7 @@ export const basicStages = [
     name: '男 (Man)',
     chinese: '男',
     english: 'Man',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/men.jpg'),
     mode: 'easy',
     difficulty: 2
   },
@@ -161,7 +161,7 @@ export const basicStages = [
     name: '兄 (Elder Brother)',
     chinese: '兄',
     english: 'Elder Brother',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/older brother.jpg'),
     mode: 'easy',
     difficulty: 3
   },
@@ -170,7 +170,7 @@ export const basicStages = [
     name: '父 (Father)',
     chinese: '父',
     english: 'Father',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/father.jpg'),
     mode: 'easy',
     difficulty: 3
   },
@@ -179,7 +179,7 @@ export const basicStages = [
     name: '妹 (Younger Sister)',
     chinese: '妹',
     english: 'Younger Sister',
-    image: getAssetPath('puzzles/easy/human.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/easy/Younger sister.jpg'),
     mode: 'easy',
     difficulty: 3
   }
@@ -238,7 +238,7 @@ export const advancedStages = [
     name: '學 (Study)',
     chinese: '學',
     english: 'Study',
-    image: getAssetPath('puzzles/hard/ocean.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/learn.jpg'),
     mode: 'hard',
     difficulty: 2
   },
@@ -283,7 +283,7 @@ export const advancedStages = [
     name: '風 (Wind)',
     chinese: '風',
     english: 'Wind',
-    image: getAssetPath('puzzles/hard/spring.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/wind.jpg'),
     mode: 'hard',
     difficulty: 2
   },
@@ -301,7 +301,7 @@ export const advancedStages = [
     name: '快 (Fast)',
     chinese: '快',
     english: 'Fast',
-    image: getAssetPath('puzzles/hard/spring.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/quick.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -310,7 +310,7 @@ export const advancedStages = [
     name: '毒 (Poison)',
     chinese: '毒',
     english: 'Poison',
-    image: getAssetPath('puzzles/hard/danger.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/poison.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -319,7 +319,7 @@ export const advancedStages = [
     name: '島 (Island)',
     chinese: '島',
     english: 'Island',
-    image: getAssetPath('puzzles/hard/land.jpg'),
+    image: getAssetPath('puzzles/hard/island.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -328,7 +328,7 @@ export const advancedStages = [
     name: '電 (Electricity)',
     chinese: '電',
     english: 'Electricity',
-    image: getAssetPath('puzzles/hard/star.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/electricity.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -337,7 +337,7 @@ export const advancedStages = [
     name: '燒 (Burn)',
     chinese: '燒',
     english: 'Burn',
-    image: getAssetPath('puzzles/hard/danger.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/burn.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -346,7 +346,7 @@ export const advancedStages = [
     name: '寫 (Write)',
     chinese: '寫',
     english: 'Write',
-    image: getAssetPath('puzzles/hard/beauty.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/Write.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -355,7 +355,7 @@ export const advancedStages = [
     name: '飛 (Fly)',
     chinese: '飛',
     english: 'Fly',
-    image: getAssetPath('puzzles/hard/star.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/star.jpg'),
     mode: 'hard',
     difficulty: 3
   },
@@ -364,7 +364,7 @@ export const advancedStages = [
     name: '慢 (Slow)',
     chinese: '慢',
     english: 'Slow',
-    image: getAssetPath('puzzles/hard/winter.jpg'), // Placeholder - needs image
+    image: getAssetPath('puzzles/hard/slow.jpg'),
     mode: 'hard',
     difficulty: 3
   }
