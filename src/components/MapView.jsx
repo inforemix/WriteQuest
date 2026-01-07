@@ -18,18 +18,40 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     return localStorage.getItem('droneHasBeenDragged') === 'true';
   });
 
+  // Check if on mobile
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     // Set sky background CSS variable
     const skyBgUrl = getAssetPath('UI/sky-bg.jpg');
     document.documentElement.style.setProperty('--sky-bg', `url(${skyBgUrl})`);
 
-    // Check if user has seen the tutorial
+    // Check if user has seen the tutorial (first-time experience)
     const hasSeenTutorial = localStorage.getItem('hasSeenMapTutorial');
     if (!hasSeenTutorial) {
       setShowTutorial(true);
       localStorage.setItem('hasSeenMapTutorial', 'true');
     }
-  }, []);
+
+    // Restore scroll position after returning from puzzle
+    const savedScrollPos = localStorage.getItem(`mapScrollPos-${mode}`);
+    if (savedScrollPos) {
+      const mapContainer = document.querySelector('.map-container');
+      if (mapContainer) {
+        setTimeout(() => {
+          mapContainer.scrollLeft = parseInt(savedScrollPos);
+        }, 100);
+      }
+    }
+  }, [mode]);
 
   const filteredStages = stages.filter(s => s.mode === mode);
 
@@ -353,7 +375,11 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           </div>
         )}
         <img
-          src={getAssetPath(mode === 'easy' ? 'UI/Light Wood-hard.png' : 'UI/Light Wood-easy.png')}
+          src={getAssetPath(
+            isMobile
+              ? (mode === 'easy' ? 'UI/advanced.png' : 'UI/basic.png')
+              : (mode === 'easy' ? 'UI/Light Wood-hard.png' : 'UI/Light Wood-easy.png')
+          )}
           alt={mode === 'easy' ? t('switchToHard') : t('switchToEasy')}
           className="mode-toggle-button"
           onClick={() => onModeChange(mode === 'easy' ? 'hard' : 'easy')}
@@ -493,7 +519,16 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
                   <div
                     className={`stage-circle ${completed ? 'completed' : ''} ${!isUnlocked ? 'locked' : ''}`}
-                    onClick={() => isUnlocked ? onPlayStage(stage) : null}
+                    onClick={() => {
+                      if (isUnlocked) {
+                        // Save scroll position before navigating to puzzle
+                        const mapContainer = document.querySelector('.map-container');
+                        if (mapContainer) {
+                          localStorage.setItem(`mapScrollPos-${mode}`, mapContainer.scrollLeft.toString());
+                        }
+                        onPlayStage(stage);
+                      }
+                    }}
                   >
                     <img src={stage.image} alt={stage.name} className="stage-preview" />
                   </div>
@@ -513,8 +548,8 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           })
         )}
 
-        {/* Drone Animation - draggable anywhere on the page */}
-        {filteredStages.length > 0 && (
+        {/* Drone Animation - draggable anywhere on the page (desktop only) */}
+        {filteredStages.length > 0 && !isMobile && (
           <div
             className={`drone-container active ${isDraggingDrone ? 'dragging' : ''}`}
             style={{
