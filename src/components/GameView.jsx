@@ -913,27 +913,6 @@ function GameView({ stage, onComplete }) {
         </div>
       )}
 
-      {/* Shop Items Ticker Slider at bottom */}
-      <div className="shop-ticker">
-        <div className="shop-ticker-track">
-          <div className="shop-ticker-items">
-            <img src={getAssetPath('puzzles/shop/tool1.jpg')} alt="Tool 1" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool2.jpg')} alt="Tool 2" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool3.jpg')} alt="Tool 3" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool4.jpg')} alt="Tool 4" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool5.jpg')} alt="Tool 5" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool6.jpg')} alt="Tool 6" className="shop-item" />
-            {/* Duplicate for seamless loop */}
-            <img src={getAssetPath('puzzles/shop/tool1.jpg')} alt="Tool 1" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool2.jpg')} alt="Tool 2" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool3.jpg')} alt="Tool 3" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool4.jpg')} alt="Tool 4" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool5.jpg')} alt="Tool 5" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool6.jpg')} alt="Tool 6" className="shop-item" />
-          </div>
-        </div>
-        <div className="shop-ticker-title">{t('specialTools')}</div>
-      </div>
     </div>
   );
 }

@@ -14,20 +14,7 @@
 }
 
 .map-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 0;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: none;
-  outline: none;
-  position: relative;
+  display: none;
 }
 
 .mode-title {
@@ -195,22 +182,22 @@
 
 .path-line {
   fill: none;
-  stroke: #3498db;
-  stroke-width: 8;
+  stroke: #1a5490;
+  stroke-width: 10;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 15, 10;
-  opacity: 0.7;
+  opacity: 0.95;
 }
 
 .path-background {
   fill: none;
-  stroke: #2980b9;
-  stroke-width: 12;
+  stroke: #0d3a6b;
+  stroke-width: 14;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 15, 10;
-  opacity: 0.4;
+  opacity: 0.7;
 }
 
 /* Desktop: Show desktop paths, hide mobile paths */
@@ -240,17 +227,15 @@
 
 /* Center stage - larger only on hover */
 .stage-node:not(.locked):hover .stage-circle {
-  width: 150px;
-  height: 150px;
+  transform: translateY(-6px) scale(1.25);
   border-width: 8px;
-  transform: translateY(-6px);
   box-shadow:
     0 16px 0 #b8a88c,
     0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .stage-node:not(.locked):hover .stage-label {
-  font-size: 1.3rem;
+  transform: scale(1.18);
 }
 
 .stage-node.draggable {
