@@ -3,6 +3,7 @@ import '../styles/GameView.css';
 import { soundManager } from '../utils/sounds';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
+import { playCantonesePronunciation, getPronunciation } from '../utils/cantoneseAudio';
 
 function GameView({ stage, onComplete }) {
   const { t } = useLanguage();
@@ -31,6 +32,12 @@ function GameView({ stage, onComplete }) {
   const moveLimit = stage.mode === 'hard' ? 30 : null; // Hard mode has 30 move limit
 
   useEffect(() => {
+    // Set background CSS variables
+    const pollutedBgUrl = getAssetPath('UI/polluted-bg.jpg');
+    const cleanBgUrl = getAssetPath('UI/clean-bg.jpg');
+    document.documentElement.style.setProperty('--polluted-bg', `url(${pollutedBgUrl})`);
+    document.documentElement.style.setProperty('--clean-bg', `url(${cleanBgUrl})`);
+
     initializePuzzle();
 
     // Show hint immediately with countdown starting at 3
@@ -690,7 +697,7 @@ function GameView({ stage, onComplete }) {
   const isNewPB = isWon && (!pb || time < parseInt(pb));
 
   return (
-    <div className="game-view">
+    <div className={`game-view ${isWon ? 'completed' : ''}`}>
       <canvas id="confetti-canvas"></canvas>
 
       <div className="game-header">
@@ -776,7 +783,34 @@ function GameView({ stage, onComplete }) {
           })}
         </div>
 
-        <h2 className="stage-title">{stage.name}</h2>
+        <div className="stage-info-container">
+          <div className="stage-title-container">
+            <h2 className="stage-title">{stage.english}</h2>
+            {stage.chinese && (
+              <button
+                className="audio-button"
+                onClick={() => {
+                  playCantonesePronunciation(stage.chinese, (error) => {
+                    console.warn(error);
+                    // Show pronunciation text if audio unavailable
+                    const pronunciation = getPronunciation(stage.chinese);
+                    if (pronunciation) {
+                      alert(`Pronunciation: ${pronunciation.jyutping}\n${stage.english}`);
+                    }
+                  });
+                }}
+                title={`Hear pronunciation: ${stage.chinese}`}
+              >
+                🔊
+              </button>
+            )}
+          </div>
+          {stage.chinese && (
+            <div className="stage-pronunciation-detail">
+              {getPronunciation(stage.chinese)?.jyutping || ''}
+            </div>
+          )}
+        </div>
 
         {showHint && (
           <div className={`hint-overlay ${hintFadingOut ? 'hint-fade-out' : ''}`}>

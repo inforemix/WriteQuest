@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import UploadModal from './UploadModal';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getPronunciation } from '../utils/cantoneseAudio';
 import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate, onModeChange }) {
@@ -10,8 +11,13 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [hoveredStageId, setHoveredStageId] = useState(null);
 
   useEffect(() => {
+    // Set sky background CSS variable
+    const skyBgUrl = getAssetPath('UI/sky-bg.jpg');
+    document.documentElement.style.setProperty('--sky-bg', `url(${skyBgUrl})`);
+
     // Check if user has seen the tutorial
     const hasSeenTutorial = localStorage.getItem('hasSeenMapTutorial');
     if (!hasSeenTutorial) {
@@ -195,20 +201,23 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Continuous background path */}
+            {/* Desktop: Zigzag curved path connecting stages */}
             <path
               className="path-background desktop-path"
               d={(() => {
                 if (filteredStages.length < 2) return '';
 
+                // Zigzag layout with 3 columns
                 let pathData = '';
                 filteredStages.forEach((stage, index) => {
                   const row = Math.floor(index / 3);
                   const col = index % 3;
                   const isReverseRow = row % 2 === 1;
                   const currentGridCol = isReverseRow ? (2 - col) : col;
+
+                  // Calculate position
                   const x = currentGridCol * 33.33 + 16.67;
-                  const y = row * 160 + 80;
+                  const y = row * 180 + 120;
 
                   if (index === 0) {
                     pathData = `M ${x}% ${y}px`;
@@ -218,16 +227,11 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                     const isPrevReverseRow = prevRow % 2 === 1;
                     const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
                     const prevX = prevGridCol * 33.33 + 16.67;
-                    const prevY = prevRow * 160 + 80;
+                    const prevY = prevRow * 180 + 120;
 
-                    if (row !== prevRow) {
-                      // Curved transition between rows
-                      const midY = (prevY + y) / 2;
-                      pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
-                    } else {
-                      // Straight line in same row
-                      pathData += ` L ${x}% ${y}px`;
-                    }
+                    // Use curved path
+                    const midY = (prevY + y) / 2;
+                    pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
                   }
                 });
                 return pathData;
@@ -235,7 +239,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               filter="url(#path-shadow)"
             />
 
-            {/* Desktop: Individual path segments */}
+            {/* Desktop: Individual zigzag path segments */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
@@ -247,50 +251,25 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               const isReverseRow = row % 2 === 1;
               const isNextReverseRow = nextRow % 2 === 1;
 
-              // Calculate actual grid positions (accounting for zigzag)
               const currentGridCol = isReverseRow ? (2 - col) : col;
               const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
 
-              // Position calculation (percentage for desktop, fixed for mobile)
               const startX = currentGridCol * 33.33 + 16.67;
-              const startY = row * 160 + 80; // Adjust for row height
-
+              const startY = row * 180 + 120;
               const endX = nextGridCol * 33.33 + 16.67;
-              const endY = nextRow * 160 + 80;
+              const endY = nextRow * 180 + 120;
 
-              // Check if transitioning to next row
-              const isRowTransition = nextRow !== row;
+              // Curved path
+              const midY = (startY + endY) / 2;
 
-              if (isRowTransition) {
-                // Curved path for row transitions
-                const midY = (startY + endY) / 2;
-                const controlX1 = startX;
-                const controlY1 = midY;
-                const controlX2 = endX;
-                const controlY2 = midY;
-
-                return (
-                  <path
-                    key={`path-${index}`}
-                    className="path-line desktop-path"
-                    d={`M ${startX}% ${startY}px C ${controlX1}% ${controlY1}px, ${controlX2}% ${controlY2}px, ${endX}% ${endY}px`}
-                    filter="url(#path-shadow)"
-                  />
-                );
-              } else {
-                // Straight line for same row
-                return (
-                  <line
-                    key={`path-${index}`}
-                    className="path-line desktop-path"
-                    x1={`${startX}%`}
-                    y1={`${startY}px`}
-                    x2={`${endX}%`}
-                    y2={`${endY}px`}
-                    filter="url(#path-shadow)"
-                  />
-                );
-              }
+              return (
+                <path
+                  key={`path-${index}`}
+                  className="path-line desktop-path"
+                  d={`M ${startX}% ${startY}px C ${startX}% ${midY}px, ${endX}% ${midY}px, ${endX}% ${endY}px`}
+                  filter="url(#path-shadow)"
+                />
+              );
             })}
 
             {/* Mobile: Continuous background path */}
@@ -358,10 +337,13 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             const isReverseRow = row % 2 === 1;
             const gridOrder = isReverseRow ? (row * 3) + (2 - col) : index;
 
+            // Determine if this is the center/highlighted stage (middle of current visible set)
+            const isCenterStage = index === Math.floor(filteredStages.length / 2);
+
             return (
               <div
                 key={stage.id}
-                className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''}`}
+                className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''} ${isCenterStage ? 'center-stage' : ''}`}
                 style={{ order: gridOrder }}
                 draggable={isAdmin}
                 onDragStart={(e) => handleDragStart(e, stage.id)}
@@ -369,6 +351,8 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, stage.id)}
                 onDragEnd={handleDragEnd}
+                onMouseEnter={() => setHoveredStageId(stage.id)}
+                onMouseLeave={() => setHoveredStageId(null)}
               >
                 <div style={{ position: 'relative' }}>
                   {completed && (
@@ -389,7 +373,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                   </div>
                 </div>
 
-                <div className="stage-label">{index + 1}. {stage.name}</div>
+                <div className="stage-label">{index + 1}. {stage.english}</div>
 
                 {isAdmin && (
                   <div className="admin-controls">
@@ -401,6 +385,21 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </div>
             );
           })
+        )}
+
+        {/* Drone Animation - appears on hover */}
+        {hoveredStageId && (
+          <div className="drone-container active">
+            <img
+              src={getAssetPath('UI/drone.png')}
+              alt="Drone"
+              className="drone-image"
+              onError={(e) => {
+                // Hide drone if image doesn't exist yet
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
         )}
       </div>
 
