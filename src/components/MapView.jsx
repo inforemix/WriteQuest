@@ -11,7 +11,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [dronePosition, setDronePosition] = useState({ x: 50, y: 50 }); // Position as percentages
+  const [dronePosition, setDronePosition] = useState({ x: 50, y: 35 }); // Position as percentages (y: 35% is ~250px higher than center)
   const [isDraggingDrone, setIsDraggingDrone] = useState(false);
   const [droneDragOffset, setDroneDragOffset] = useState({ x: 0, y: 0 });
 
@@ -134,7 +134,10 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     e.preventDefault();
     setIsDraggingDrone(true);
 
-    const container = e.currentTarget.parentElement;
+    // Use map-view (whole screen) for positioning
+    const container = document.querySelector('.map-view');
+    if (!container) return;
+
     const rect = container.getBoundingClientRect();
     const offsetX = e.clientX - (rect.left + (dronePosition.x / 100) * rect.width);
     const offsetY = e.clientY - (rect.top + (dronePosition.y / 100) * rect.height);
@@ -145,14 +148,15 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const handleDroneMouseMove = (e) => {
     if (!isDraggingDrone) return;
 
-    const container = document.querySelector('.map-container');
+    // Use map-view (whole screen) instead of map-container
+    const container = document.querySelector('.map-view');
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
     const x = ((e.clientX - rect.left - droneDragOffset.x) / rect.width) * 100;
     const y = ((e.clientY - rect.top - droneDragOffset.y) / rect.height) * 100;
 
-    // Constrain to container bounds
+    // Constrain to viewport bounds
     const constrainedX = Math.max(0, Math.min(100, x));
     const constrainedY = Math.max(0, Math.min(100, y));
 
@@ -295,25 +299,32 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Horizontal line connecting stages */}
+            {/* Desktop: Zigzag curved line connecting stages */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
               const baseX = 60; // Starting X position
               const spacing = (80 + 120); // gap + circle width
-              const yPosition = 50; // Center height in %
+              const zigzagAmplitude = 15; // Percentage for up/down movement
 
-              const startX = baseX + (index * spacing);
-              const endX = baseX + ((index + 1) * spacing);
+              // Current stage position
+              const isEven = index % 2 === 0;
+              const currentY = isEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const currentX = baseX + (index * spacing);
+
+              // Next stage position
+              const isNextEven = (index + 1) % 2 === 0;
+              const nextY = isNextEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const nextX = baseX + ((index + 1) * spacing);
+
+              // Control point for curved line
+              const midX = (currentX + nextX) / 2;
 
               return (
-                <line
+                <path
                   key={`path-${index}`}
                   className="path-line desktop-path"
-                  x1={`${startX}px`}
-                  y1={`${yPosition}%`}
-                  x2={`${endX}px`}
-                  y2={`${yPosition}%`}
+                  d={`M ${currentX} ${currentY}% Q ${midX} ${(currentY + nextY) / 2}% ${nextX} ${nextY}%`}
                   filter="url(#path-shadow)"
                 />
               );

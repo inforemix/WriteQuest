@@ -35,6 +35,22 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         '--bg-image-mobile': `url(${getAssetPath('UI/mobile-graphic.jpg')})`
       }}
     >
+      {/* Video overlay with lighten blend mode */}
+      <video
+        className="homepage-video-overlay"
+        autoPlay
+        loop
+        muted
+        playsInline
+        onError={(e) => {
+          // Hide video if it doesn't exist yet
+          e.target.style.display = 'none';
+        }}
+      >
+        <source src={getAssetPath('Web-Homepage-Alpha.mp4')} type="video/mp4" />
+        <source src={getAssetPath('Web-Homepage-Alpha.webm')} type="video/webm" />
+      </video>
+
       <div className="home-content">
         <img src={getAssetPath('UI/title.png')} alt="Write Aqua" className="game-title-image" />
 
