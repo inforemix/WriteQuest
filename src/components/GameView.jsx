@@ -872,7 +872,7 @@ function GameView({ stage, onComplete, allStages }) {
                 e.target.style.display = 'none';
               }}
             >
-              <source src={getAssetPath('UI/win.mp4.mp4')} type="video/mp4" />
+              <source src={getAssetPath('UI/Win-Easy.mp4')} type="video/mp4" />
             </video>
           )}
 

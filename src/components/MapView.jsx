@@ -14,6 +14,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [dronePosition, setDronePosition] = useState({ x: 50, y: 35 }); // Position as percentages (y: 35% is ~250px higher than center)
   const [isDraggingDrone, setIsDraggingDrone] = useState(false);
   const [droneDragOffset, setDroneDragOffset] = useState({ x: 0, y: 0 });
+  const [hasBeenDragged, setHasBeenDragged] = useState(() => {
+    return localStorage.getItem('droneHasBeenDragged') === 'true';
+  });
 
   useEffect(() => {
     // Set sky background CSS variable
@@ -133,6 +136,12 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const handleDroneMouseDown = (e) => {
     e.preventDefault();
     setIsDraggingDrone(true);
+
+    // Hide speech bubble after first drag
+    if (!hasBeenDragged) {
+      setHasBeenDragged(true);
+      localStorage.setItem('droneHasBeenDragged', 'true');
+    }
 
     // Use map-view (whole screen) for positioning
     const container = document.querySelector('.map-view');
@@ -525,9 +534,11 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 e.target.style.display = 'none';
               }}
             />
-            <div className="drone-speech-bubble">
-              drag me to scroll
-            </div>
+            {!hasBeenDragged && (
+              <div className="drone-speech-bubble">
+                drag me to scroll
+              </div>
+            )}
           </div>
         )}
       </div>
