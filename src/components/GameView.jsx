@@ -559,45 +559,110 @@ function GameView({ stage, onComplete, allStages }) {
       precision mediump float;
       uniform vec2 resolution;
       uniform float time;
+      uniform float variation;
 
       float random(vec2 st) {
         return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+      }
+
+      // Noise function for organic movement
+      float noise(vec2 st) {
+        vec2 i = floor(st);
+        vec2 f = fract(st);
+        float a = random(i);
+        float b = random(i + vec2(1.0, 0.0));
+        float c = random(i + vec2(0.0, 1.0));
+        float d = random(i + vec2(1.0, 1.0));
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
       }
 
       void main() {
         vec2 uv = gl_FragCoord.xy / resolution.xy;
         vec3 finalColor = vec3(0.0);
 
-        // Create 80 confetti pieces
-        for(float i = 0.0; i < 80.0; i += 1.0) {
+        // Animation type based on variation (0-2)
+        // 0: Burst explosion from center
+        // 1: Waterfall with splash
+        // 2: Spiral celebration
+
+        // Create 100 confetti pieces for more excitement
+        for(float i = 0.0; i < 100.0; i += 1.0) {
           vec2 seed = vec2(i * 0.123, i * 0.456);
           float id = random(seed);
 
-          // Starting position (spread across top)
-          float startX = random(seed + vec2(1.0, 0.0));
-          float startY = -0.2 - random(seed + vec2(2.0, 0.0)) * 0.3;
+          float x, y;
+          float gravity = 0.0;
 
-          // Falling speed with variation - SUPER FAST!
-          float fallSpeed = 0.5 + random(seed + vec2(3.0, 0.0)) * 0.6;
+          if(variation < 0.5) {
+            // BURST EXPLOSION - pieces explode from center then fall with gravity
+            float burstAngle = random(seed + vec2(1.0, 0.0)) * 6.28318;
+            float burstSpeed = 0.3 + random(seed + vec2(2.0, 0.0)) * 0.7;
+            float burstTime = min(time * 2.0, 1.0); // Quick burst
 
-          // Horizontal drift (wind effect) - rapid movement
-          float drift = sin(time * 2.5 + id * 6.28) * 0.15;
-          float driftSpeed = random(seed + vec2(4.0, 0.0)) * 0.12;
+            // Initial burst outward
+            float burstX = cos(burstAngle) * burstSpeed * burstTime;
+            float burstY = sin(burstAngle) * burstSpeed * burstTime;
 
-          // Current position
-          float x = startX + drift + sin(time * 4.0 + id * 10.0) * driftSpeed;
-          float y = startY + time * fallSpeed;
+            // Gravity kicks in after burst
+            gravity = max(0.0, time - 0.3) * 1.5;
 
-          // Loop confetti from bottom to top
-          y = mod(y, 1.3) - 0.15;
-          x = mod(x + 0.5, 1.0);
+            x = 0.5 + burstX + sin(time * 3.0 + id * 4.0) * 0.05;
+            y = 0.5 + burstY - gravity * gravity * 0.3;
+
+            // Bounce effect at bottom
+            if(y < 0.0) {
+              float bounceCount = floor(-y / 0.3);
+              y = abs(mod(y, 0.3)) * pow(0.5, bounceCount);
+            }
+          } else if(variation < 1.5) {
+            // WATERFALL WITH SPLASH - cascading from multiple points
+            float columnId = floor(random(seed + vec2(1.0, 0.0)) * 5.0);
+            float startX = 0.15 + columnId * 0.175;
+            float startY = 1.2 + random(seed + vec2(2.0, 0.0)) * 0.5;
+
+            float fallSpeed = 0.8 + random(seed + vec2(3.0, 0.0)) * 0.6;
+            float waterNoise = noise(vec2(time * 2.0, i * 0.1)) * 0.1;
+
+            x = startX + waterNoise + sin(time * 5.0 + id * 8.0) * 0.03;
+            y = startY - time * fallSpeed;
+
+            // Splash effect when hitting bottom
+            if(y < 0.1) {
+              float splashTime = (0.1 - y) / fallSpeed;
+              float splashAngle = random(seed + vec2(4.0, 0.0)) * 3.14159;
+              float splashSpeed = 0.3 + random(seed + vec2(5.0, 0.0)) * 0.4;
+              x += cos(splashAngle) * splashSpeed * splashTime;
+              y = 0.1 + sin(splashAngle) * splashSpeed * splashTime - splashTime * splashTime * 0.8;
+            }
+
+            // Loop back to top
+            if(y < -0.2) {
+              y = mod(y + 1.4, 1.4);
+            }
+          } else {
+            // SPIRAL CELEBRATION - pieces spiral outward with sparkle
+            float spiralAngle = id * 6.28318 + time * (2.0 + random(seed + vec2(1.0, 0.0)) * 2.0);
+            float spiralRadius = time * 0.3 * (0.5 + random(seed + vec2(2.0, 0.0)) * 0.5);
+            spiralRadius = min(spiralRadius, 0.6);
+
+            // Add wave motion
+            float wave = sin(time * 4.0 + id * 3.0) * 0.05;
+
+            x = 0.5 + cos(spiralAngle) * spiralRadius + wave;
+            y = 0.5 + sin(spiralAngle) * spiralRadius * 0.7 - time * 0.1;
+
+            // Gentle gravity pull
+            y -= time * time * 0.03;
+          }
 
           vec2 confettiPos = vec2(x, y);
           vec2 diff = uv - confettiPos;
 
-          // Rotation with smooth animation - SUPER FAST rotation!
-          float rotSpeed = random(seed + vec2(5.0, 0.0)) * 12.0 - 6.0;
-          float angle = time * rotSpeed + id * 6.28;
+          // Dynamic rotation based on movement
+          float rotSpeed = random(seed + vec2(5.0, 0.0)) * 15.0 - 7.5;
+          float tumble = sin(time * 6.0 + id * 5.0) * 2.0; // Tumbling effect
+          float angle = time * rotSpeed + tumble + id * 6.28;
 
           // Rotate the difference vector
           float cosA = cos(angle);
@@ -607,59 +672,69 @@ function GameView({ stage, onComplete, allStages }) {
             diff.x * sinA + diff.y * cosA
           );
 
-          // Confetti shape - rectangle
-          float aspectRatio = resolution.x / resolution.y;
-          float sizeX = 0.012;
-          float sizeY = 0.020;
+          // Variable shapes - mix of rectangles and squares
+          float shapeType = random(seed + vec2(9.0, 0.0));
+          float sizeX = shapeType < 0.3 ? 0.008 : 0.012;
+          float sizeY = shapeType < 0.3 ? 0.008 : 0.018;
 
-          // Add some size variation
-          float sizeVariation = 0.7 + random(seed + vec2(6.0, 0.0)) * 0.6;
+          // Size variation with pulse
+          float pulse = 1.0 + sin(time * 8.0 + id * 4.0) * 0.15;
+          float sizeVariation = (0.6 + random(seed + vec2(6.0, 0.0)) * 0.8) * pulse;
           sizeX *= sizeVariation;
           sizeY *= sizeVariation;
 
           // Smooth rectangle shape
-          float rectX = smoothstep(sizeX, sizeX * 0.8, abs(rotDiff.x));
-          float rectY = smoothstep(sizeY, sizeY * 0.8, abs(rotDiff.y));
+          float rectX = smoothstep(sizeX, sizeX * 0.7, abs(rotDiff.x));
+          float rectY = smoothstep(sizeY, sizeY * 0.7, abs(rotDiff.y));
           float confettiShape = rectX * rectY;
 
-          // Vibrant colors - fixed per piece
+          // Expanded vibrant color palette
           vec3 color;
           float colorId = random(seed + vec2(7.0, 0.0));
 
-          if(colorId < 0.16) {
+          if(colorId < 0.125) {
             color = vec3(1.0, 0.2, 0.3); // Red
-          } else if(colorId < 0.33) {
+          } else if(colorId < 0.25) {
             color = vec3(1.0, 0.8, 0.2); // Yellow
-          } else if(colorId < 0.5) {
+          } else if(colorId < 0.375) {
             color = vec3(0.2, 0.8, 1.0); // Blue
-          } else if(colorId < 0.66) {
+          } else if(colorId < 0.5) {
             color = vec3(0.3, 1.0, 0.4); // Green
-          } else if(colorId < 0.83) {
+          } else if(colorId < 0.625) {
             color = vec3(1.0, 0.4, 0.8); // Pink
-          } else {
+          } else if(colorId < 0.75) {
             color = vec3(0.7, 0.3, 1.0); // Purple
+          } else if(colorId < 0.875) {
+            color = vec3(1.0, 0.5, 0.0); // Orange
+          } else {
+            color = vec3(0.0, 1.0, 0.8); // Cyan
           }
 
-          // Shimmer effect based on rotation
-          float shimmer = 0.7 + 0.3 * abs(sin(angle * 2.0));
-          color *= shimmer;
+          // Enhanced shimmer with sparkle bursts
+          float shimmer = 0.6 + 0.4 * abs(sin(angle * 2.0 + time * 3.0));
+          float sparkle = pow(max(0.0, sin(time * 20.0 + id * 15.0)), 8.0) * 0.5;
+          color *= shimmer + sparkle;
 
-          // Depth effect - pieces further away are dimmer
+          // Depth effect with distance fade
           float depth = random(seed + vec2(8.0, 0.0));
-          float depthFade = 0.6 + depth * 0.4;
+          float depthFade = 0.5 + depth * 0.5;
 
-          finalColor += color * confettiShape * depthFade;
+          // Distance from visible area fade
+          float edgeFade = 1.0 - smoothstep(0.0, 0.15, max(-y, y - 1.0));
+          edgeFade *= 1.0 - smoothstep(0.0, 0.15, max(-x, x - 1.0));
+
+          finalColor += color * confettiShape * depthFade * edgeFade;
         }
 
-        // Fade in at start and fade out at end - SUPER FAST!
-        float fadeIn = smoothstep(0.0, 0.15, time);
-        float fadeOut = smoothstep(2.5, 1.8, time);
+        // Smooth fade in and out
+        float fadeIn = smoothstep(0.0, 0.2, time);
+        float fadeOut = smoothstep(3.0, 2.0, time);
         float fade = fadeIn * fadeOut;
 
-        // Boost brightness
-        finalColor *= 1.5;
+        // Brightness boost
+        finalColor *= 1.6;
 
-        // Output with proper alpha - only show pixels where there's confetti
+        // Output with alpha
         float alpha = min(1.0, length(finalColor)) * fade;
         gl_FragColor = vec4(finalColor * fade, alpha);
       }
@@ -696,8 +771,13 @@ function GameView({ stage, onComplete, allStages }) {
 
     const resolutionLocation = gl.getUniformLocation(program, 'resolution');
     const timeLocation = gl.getUniformLocation(program, 'time');
+    const variationLocation = gl.getUniformLocation(program, 'variation');
+
+    // Random variation: 0 = burst, 1 = waterfall, 2 = spiral
+    const animationVariation = Math.floor(Math.random() * 3);
 
     gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+    gl.uniform1f(variationLocation, animationVariation);
 
     // Set viewport to full canvas size
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -722,8 +802,8 @@ function GameView({ stage, onComplete, allStages }) {
       gl.uniform1f(timeLocation, currentTime);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-      // Super short duration - 2.5 seconds
-      if (currentTime < 2.5) {
+      // Duration - 3 seconds for varied animations
+      if (currentTime < 3.0) {
         requestAnimationFrame(render);
       } else {
         canvas.style.opacity = '0';
