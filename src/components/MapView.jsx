@@ -69,6 +69,15 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     return localStorage.getItem(completedKey) === 'true';
   };
 
+  // Save scroll position before switching modes
+  const handleModeToggle = () => {
+    const mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      localStorage.setItem(`mapScrollPos-${mode}`, mapContainer.scrollLeft.toString());
+    }
+    onModeChange(mode === 'easy' ? 'hard' : 'easy');
+  };
+
   const handleAddStage = () => {
     setShowUploadModal(true);
   };
@@ -382,7 +391,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           )}
           alt={mode === 'easy' ? t('switchToHard') : t('switchToEasy')}
           className="mode-toggle-button"
-          onClick={() => onModeChange(mode === 'easy' ? 'hard' : 'easy')}
+          onClick={handleModeToggle}
         />
       </div>
 
