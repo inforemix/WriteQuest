@@ -823,6 +823,25 @@ function GameView({ stage, onComplete }) {
 
       {isWon && (
         <>
+          {/* Win celebration video for easy mode */}
+          {stage.mode === 'easy' && (
+            <video
+              className="win-celebration-video"
+              autoPlay
+              muted={false}
+              playsInline
+              onEnded={(e) => {
+                e.target.style.display = 'none';
+              }}
+              onError={(e) => {
+                console.error('Win video failed to load');
+                e.target.style.display = 'none';
+              }}
+            >
+              <source src={getAssetPath('UI/win.mp4')} type="video/mp4" />
+            </video>
+          )}
+
           {/* Bot character next to success popup */}
           <div className="bot-character bot-appear">
             <img

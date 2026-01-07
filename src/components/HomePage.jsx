@@ -35,7 +35,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         '--bg-image-mobile': `url(${getAssetPath('UI/mobile-graphic.jpg')})`
       }}
     >
-      {/* Video overlay with lighten blend mode */}
+      {/* Video overlay with soft-light blend mode */}
       <video
         className="homepage-video-overlay"
         autoPlay
@@ -43,12 +43,10 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         muted
         playsInline
         onError={(e) => {
-          // Hide video if it doesn't exist yet
-          e.target.style.display = 'none';
+          console.error('Video failed to load');
         }}
       >
-        <source src={getAssetPath('Web-Homepage-Alpha.mp4')} type="video/mp4" />
-        <source src={getAssetPath('Web-Homepage-Alpha.webm')} type="video/webm" />
+        <source src={getAssetPath('UI/Web-Homepage-Aplha.mp4')} type="video/mp4" />
       </video>
 
       <div className="home-content">

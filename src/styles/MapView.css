@@ -14,7 +14,20 @@
 }
 
 .map-header {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  margin-bottom: 30px;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  position: relative;
 }
 
 .mode-title {
