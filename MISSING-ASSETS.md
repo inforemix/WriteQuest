@@ -14,6 +14,8 @@ This document lists the assets that need to be added to complete the v0.5 featur
 
 ## Audio Files Needed (/public/audio/)
 
+**NOTE: Create the `/public/audio/` directory first!**
+
 All audio files should be in MP3 format with clear Cantonese pronunciation.
 
 ### Basic Mode Characters (20 files)

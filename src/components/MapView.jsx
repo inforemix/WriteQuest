@@ -217,7 +217,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
                   // Calculate position
                   const x = currentGridCol * 33.33 + 16.67;
-                  const y = row * 200 + 150;
+                  const y = row * 180 + 120;
 
                   if (index === 0) {
                     pathData = `M ${x}% ${y}px`;
@@ -227,7 +227,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                     const isPrevReverseRow = prevRow % 2 === 1;
                     const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
                     const prevX = prevGridCol * 33.33 + 16.67;
-                    const prevY = prevRow * 200 + 150;
+                    const prevY = prevRow * 180 + 120;
 
                     // Use curved path
                     const midY = (prevY + y) / 2;
@@ -255,9 +255,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
 
               const startX = currentGridCol * 33.33 + 16.67;
-              const startY = row * 200 + 150;
+              const startY = row * 180 + 120;
               const endX = nextGridCol * 33.33 + 16.67;
-              const endY = nextRow * 200 + 150;
+              const endY = nextRow * 180 + 120;
 
               // Curved path
               const midY = (startY + endY) / 2;
