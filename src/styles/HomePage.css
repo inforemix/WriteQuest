@@ -135,7 +135,7 @@
   object-fit: cover;
   z-index: 1;
   mix-blend-mode: soft-light;
-  opacity: 0.8;
+  opacity: 0.5;
   pointer-events: none;
 }
 

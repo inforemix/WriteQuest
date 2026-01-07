@@ -355,7 +355,7 @@ export const advancedStages = [
     name: '飛 (Fly)',
     chinese: '飛',
     english: 'Fly',
-    image: getAssetPath('puzzles/hard/fly.jpg'),
+    image: getAssetPath('puzzles/hard/Fly.jpg'),
     mode: 'hard',
     difficulty: 3
   },

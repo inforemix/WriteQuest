@@ -179,7 +179,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     }
   }, [isDraggingDrone, droneDragOffset]);
 
-  // Handle mouse wheel for horizontal scrolling with smooth momentum
+  // Handle mouse wheel, touch swipe, and drag for horizontal scrolling
   useEffect(() => {
     const mapContainer = document.querySelector('.map-container');
     if (!mapContainer) return;
@@ -187,6 +187,11 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     let isScrolling = false;
     let scrollVelocity = 0;
     let animationFrame = null;
+
+    // Touch and drag state
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
 
     const smoothScroll = () => {
       if (Math.abs(scrollVelocity) > 0.5) {
@@ -199,6 +204,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
       }
     };
 
+    // Mouse wheel handler
     const handleWheel = (e) => {
       // Only apply horizontal scroll on desktop
       if (window.innerWidth > 768) {
@@ -215,10 +221,72 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
       }
     };
 
+    // Mouse drag handlers
+    const handleMouseDown = (e) => {
+      // Only on desktop
+      if (window.innerWidth > 768) {
+        isDragging = true;
+        mapContainer.style.cursor = 'grabbing';
+        startX = e.pageX - mapContainer.offsetLeft;
+        scrollLeft = mapContainer.scrollLeft;
+      }
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - mapContainer.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      mapContainer.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      mapContainer.style.cursor = 'grab';
+    };
+
+    const handleMouseLeave = () => {
+      isDragging = false;
+      mapContainer.style.cursor = 'grab';
+    };
+
+    // Touch swipe handlers
+    let touchStartX = 0;
+    let touchScrollLeft = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].pageX;
+      touchScrollLeft = mapContainer.scrollLeft;
+    };
+
+    const handleTouchMove = (e) => {
+      const x = e.touches[0].pageX;
+      const walk = (touchStartX - x) * 1.5; // Scroll speed multiplier
+      mapContainer.scrollLeft = touchScrollLeft + walk;
+    };
+
+    // Add event listeners
     mapContainer.addEventListener('wheel', handleWheel, { passive: false });
+    mapContainer.addEventListener('mousedown', handleMouseDown);
+    mapContainer.addEventListener('mousemove', handleMouseMove);
+    mapContainer.addEventListener('mouseup', handleMouseUp);
+    mapContainer.addEventListener('mouseleave', handleMouseLeave);
+    mapContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+    mapContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+    // Set cursor style
+    if (window.innerWidth > 768) {
+      mapContainer.style.cursor = 'grab';
+    }
 
     return () => {
       mapContainer.removeEventListener('wheel', handleWheel);
+      mapContainer.removeEventListener('mousedown', handleMouseDown);
+      mapContainer.removeEventListener('mousemove', handleMouseMove);
+      mapContainer.removeEventListener('mouseup', handleMouseUp);
+      mapContainer.removeEventListener('mouseleave', handleMouseLeave);
+      mapContainer.removeEventListener('touchstart', handleTouchStart);
+      mapContainer.removeEventListener('touchmove', handleTouchMove);
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }

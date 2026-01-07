@@ -5,7 +5,7 @@ import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
 import { playCantonesePronunciation, getPronunciation } from '../utils/cantoneseAudio';
 
-function GameView({ stage, onComplete }) {
+function GameView({ stage, onComplete, allStages }) {
   const { t } = useLanguage();
   const [pieces, setPieces] = useState([]);
   const [moves, setMoves] = useState(0);
@@ -22,6 +22,7 @@ function GameView({ stage, onComplete }) {
   const [justDropped, setJustDropped] = useState(false);
   const [hintCount, setHintCount] = useState(0);
   const [touchDragTarget, setTouchDragTarget] = useState(null);
+  const [isLastEasyPuzzle, setIsLastEasyPuzzle] = useState(false);
   const timerRef = useRef();
   const hintTimerRef = useRef();
   const hintCountdownRef = useRef();
@@ -30,6 +31,22 @@ function GameView({ stage, onComplete }) {
   const gridSize = stage.mode === 'easy' ? 2 : 3;
   const isDraggable = true; // Enable drag-drop for both modes
   const moveLimit = stage.mode === 'hard' ? 30 : null; // Hard mode has 30 move limit
+
+  // Check if this is the last easy puzzle to complete
+  useEffect(() => {
+    if (stage.mode === 'easy' && allStages) {
+      const easyStages = allStages.filter(s => s.mode === 'easy');
+      const completedEasyStages = easyStages.filter(s => {
+        if (s.id === stage.id) return false; // Exclude current stage
+        const completedKey = `completed-${s.id}`;
+        return localStorage.getItem(completedKey) === 'true';
+      });
+
+      // This is the last puzzle if all other easy puzzles are completed
+      const isLast = completedEasyStages.length === easyStages.length - 1;
+      setIsLastEasyPuzzle(isLast);
+    }
+  }, [stage, allStages]);
 
   useEffect(() => {
     // Set background CSS variables
@@ -823,8 +840,8 @@ function GameView({ stage, onComplete }) {
 
       {isWon && (
         <>
-          {/* Win celebration video for easy mode */}
-          {stage.mode === 'easy' && (
+          {/* Win celebration video for last easy mode puzzle */}
+          {stage.mode === 'easy' && isLastEasyPuzzle && (
             <video
               className="win-celebration-video"
               autoPlay
