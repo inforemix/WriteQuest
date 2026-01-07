@@ -11,6 +11,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [dronePosition, setDronePosition] = useState({ x: 50, y: 50 }); // Position as percentages
+  const [isDraggingDrone, setIsDraggingDrone] = useState(false);
+  const [droneDragOffset, setDroneDragOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Set sky background CSS variable
@@ -126,6 +129,52 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     setDragOverStageId(null);
   };
 
+  // Drone drag handlers
+  const handleDroneMouseDown = (e) => {
+    e.preventDefault();
+    setIsDraggingDrone(true);
+
+    const container = e.currentTarget.parentElement;
+    const rect = container.getBoundingClientRect();
+    const offsetX = e.clientX - (rect.left + (dronePosition.x / 100) * rect.width);
+    const offsetY = e.clientY - (rect.top + (dronePosition.y / 100) * rect.height);
+
+    setDroneDragOffset({ x: offsetX, y: offsetY });
+  };
+
+  const handleDroneMouseMove = (e) => {
+    if (!isDraggingDrone) return;
+
+    const container = document.querySelector('.map-container');
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left - droneDragOffset.x) / rect.width) * 100;
+    const y = ((e.clientY - rect.top - droneDragOffset.y) / rect.height) * 100;
+
+    // Constrain to container bounds
+    const constrainedX = Math.max(0, Math.min(100, x));
+    const constrainedY = Math.max(0, Math.min(100, y));
+
+    setDronePosition({ x: constrainedX, y: constrainedY });
+  };
+
+  const handleDroneMouseUp = () => {
+    setIsDraggingDrone(false);
+  };
+
+  useEffect(() => {
+    if (isDraggingDrone) {
+      window.addEventListener('mousemove', handleDroneMouseMove);
+      window.addEventListener('mouseup', handleDroneMouseUp);
+
+      return () => {
+        window.removeEventListener('mousemove', handleDroneMouseMove);
+        window.removeEventListener('mouseup', handleDroneMouseUp);
+      };
+    }
+  }, [isDraggingDrone, droneDragOffset]);
+
   return (
     <div className="map-view">
       <div className="map-header">
@@ -200,72 +249,25 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Zigzag curved path connecting stages */}
-            <path
-              className="path-background desktop-path"
-              d={(() => {
-                if (filteredStages.length < 2) return '';
-
-                // Zigzag layout with 3 columns
-                let pathData = '';
-                filteredStages.forEach((stage, index) => {
-                  const row = Math.floor(index / 3);
-                  const col = index % 3;
-                  const isReverseRow = row % 2 === 1;
-                  const currentGridCol = isReverseRow ? (2 - col) : col;
-
-                  // Calculate position
-                  const x = currentGridCol * 33.33 + 16.67;
-                  const y = row * 180 + 120;
-
-                  if (index === 0) {
-                    pathData = `M ${x}% ${y}px`;
-                  } else {
-                    const prevRow = Math.floor((index - 1) / 3);
-                    const prevCol = (index - 1) % 3;
-                    const isPrevReverseRow = prevRow % 2 === 1;
-                    const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
-                    const prevX = prevGridCol * 33.33 + 16.67;
-                    const prevY = prevRow * 180 + 120;
-
-                    // Use curved path
-                    const midY = (prevY + y) / 2;
-                    pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
-                  }
-                });
-                return pathData;
-              })()}
-              filter="url(#path-shadow)"
-            />
-
-            {/* Desktop: Individual zigzag path segments */}
+            {/* Desktop: Horizontal line connecting stages */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              const row = Math.floor(index / 3);
-              const col = index % 3;
-              const nextRow = Math.floor((index + 1) / 3);
-              const nextCol = (index + 1) % 3;
+              const baseX = 60; // Starting X position
+              const spacing = (80 + 120); // gap + circle width
+              const yPosition = 50; // Center height in %
 
-              const isReverseRow = row % 2 === 1;
-              const isNextReverseRow = nextRow % 2 === 1;
-
-              const currentGridCol = isReverseRow ? (2 - col) : col;
-              const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
-
-              const startX = currentGridCol * 33.33 + 16.67;
-              const startY = row * 180 + 120;
-              const endX = nextGridCol * 33.33 + 16.67;
-              const endY = nextRow * 180 + 120;
-
-              // Curved path
-              const midY = (startY + endY) / 2;
+              const startX = baseX + (index * spacing);
+              const endX = baseX + ((index + 1) * spacing);
 
               return (
-                <path
+                <line
                   key={`path-${index}`}
                   className="path-line desktop-path"
-                  d={`M ${startX}% ${startY}px C ${startX}% ${midY}px, ${endX}% ${midY}px, ${endX}% ${endY}px`}
+                  x1={`${startX}px`}
+                  y1={`${yPosition}%`}
+                  x2={`${endX}px`}
+                  y2={`${yPosition}%`}
                   filter="url(#path-shadow)"
                 />
               );
@@ -330,12 +332,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             const isPreviousCompleted = index === 0 || isStageCompleted(filteredStages[index - 1].id);
             const isUnlocked = isAdmin || isPreviousCompleted;
 
-            // Calculate zigzag order for desktop (3 columns)
-            const row = Math.floor(index / 3);
-            const col = index % 3;
-            const isReverseRow = row % 2 === 1;
-            const gridOrder = isReverseRow ? (row * 3) + (2 - col) : index;
-
             // Determine if this is the center/highlighted stage (middle of current visible set)
             const isCenterStage = index === Math.floor(filteredStages.length / 2);
 
@@ -343,7 +339,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               <div
                 key={stage.id}
                 className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''} ${isCenterStage ? 'center-stage' : ''}`}
-                style={{ order: gridOrder }}
                 draggable={isAdmin}
                 onDragStart={(e) => handleDragStart(e, stage.id)}
                 onDragOver={(e) => handleDragOver(e, stage.id)}
@@ -384,9 +379,18 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           })
         )}
 
-        {/* Drone Animation - always visible above center piece */}
+        {/* Drone Animation - draggable anywhere on the page */}
         {filteredStages.length > 0 && (
-          <div className="drone-container active">
+          <div
+            className={`drone-container active ${isDraggingDrone ? 'dragging' : ''}`}
+            style={{
+              left: `${dronePosition.x}%`,
+              top: `${dronePosition.y}%`,
+              transform: isDraggingDrone ? 'translate(-50%, -50%) scale(1.05)' : 'translate(-50%, -50%)',
+              cursor: isDraggingDrone ? 'grabbing' : 'grab'
+            }}
+            onMouseDown={handleDroneMouseDown}
+          >
             <img
               src={getAssetPath('UI/drone.png')}
               alt="Drone"

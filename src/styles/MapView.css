@@ -113,24 +113,25 @@
   box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
-/* Map path container - Desktop: zigzag grid layout */
+/* Map path container - Desktop: horizontal scroll layout */
 @media (min-width: 769px) {
   .map-container {
     position: relative;
-    max-width: 1000px;
     margin: 0 auto;
-    padding: 60px 40px;
-    padding-bottom: 100px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 60px 60px;
+    padding: 80px 40px;
+    padding-bottom: 120px;
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 80px;
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
     /* Hide scrollbar but keep functionality */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
+    min-width: 100%;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -138,7 +139,7 @@
     display: none;
   }
 
-  /* Enable full-width scroll */
+  /* Smooth scrolling with easing */
   .map-view {
     overflow-x: auto;
     scrollbar-width: none;
@@ -147,6 +148,11 @@
 
   .map-view::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Stage nodes snap to center when scrolling */
+  .stage-node {
+    scroll-snap-align: center;
   }
 }
 
@@ -806,20 +812,23 @@
   }
 }
 
-/* Drone Animation - Always visible above center stage */
+/* Drone Animation - Draggable anywhere on the page */
 .drone-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 5;
+  pointer-events: auto;
+  z-index: 10;
   opacity: 1;
-  transition: top 0.6s ease-out, left 0.6s ease-out;
+  transition: transform 0.2s ease-out;
+  user-select: none;
 }
 
 .drone-container.active {
   opacity: 1;
+}
+
+.drone-container.dragging {
+  z-index: 100;
+  transition: none;
 }
 
 .drone-image {

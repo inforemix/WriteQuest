@@ -262,10 +262,10 @@ export const advancedStages = [
   },
   {
     id: 2009,
-    name: '愛 (Love)',
-    chinese: '愛',
-    english: 'Love',
-    image: getAssetPath('puzzles/hard/love.jpg'),
+    name: '慢 (Slow)',
+    chinese: '慢',
+    english: 'Slow',
+    image: getAssetPath('puzzles/hard/slow.jpg'),
     mode: 'hard',
     difficulty: 2
   },
@@ -355,16 +355,16 @@ export const advancedStages = [
     name: '飛 (Fly)',
     chinese: '飛',
     english: 'Fly',
-    image: getAssetPath('puzzles/hard/star.jpg'),
+    image: getAssetPath('puzzles/hard/fly.jpg'),
     mode: 'hard',
     difficulty: 3
   },
   {
     id: 2020,
-    name: '慢 (Slow)',
-    chinese: '慢',
-    english: 'Slow',
-    image: getAssetPath('puzzles/hard/slow.jpg'),
+    name: '愛 (Love)',
+    chinese: '愛',
+    english: 'Love',
+    image: getAssetPath('puzzles/hard/love.jpg'),
     mode: 'hard',
     difficulty: 3
   }

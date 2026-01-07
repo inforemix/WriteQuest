@@ -762,31 +762,35 @@ function GameView({ stage, onComplete }) {
                   ${piece.rotation === 0 && piece.currentIndex === piece.originalIndex ? 'correct' : ''}
                   ${isBeingDragged ? 'dragging' : ''}
                   ${isHollowSlot ? 'hollow-slot' : ''}
-                  ${isDropTarget ? 'drop-target' : ''}`}
+                  ${isDropTarget ? 'drop-target' : ''}
+                  ${isWon ? 'puzzle-complete' : ''}`}
                 style={{
                   backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
                   transform: isBeingDragged ? 'scale(1.15)' : `rotate(${piece.displayRotation}deg)`,
-                  transition: isBeingDragged ? 'none' : undefined
+                  transition: isBeingDragged ? 'none' : undefined,
+                  cursor: isWon ? 'default' : undefined,
+                  pointerEvents: isWon ? 'none' : 'auto'
                 }}
                 data-current-index={piece.currentIndex}
-                onClick={(e) => handleRotate(piece.originalIndex, e)}
-                draggable={isDraggable}
-                onDragStart={() => handleDragStart(piece.currentIndex, index)}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDrop(piece.currentIndex)}
-                onDragEnd={handleDragEnd}
-                onTouchStart={(e) => handleTouchStart(e, piece.currentIndex, index)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                onClick={(e) => !isWon && handleRotate(piece.originalIndex, e)}
+                draggable={isDraggable && !isWon}
+                onDragStart={() => !isWon && handleDragStart(piece.currentIndex, index)}
+                onDragOver={!isWon ? handleDragOver : undefined}
+                onDrop={() => !isWon && handleDrop(piece.currentIndex)}
+                onDragEnd={!isWon ? handleDragEnd : undefined}
+                onTouchStart={(e) => !isWon && handleTouchStart(e, piece.currentIndex, index)}
+                onTouchMove={!isWon ? handleTouchMove : undefined}
+                onTouchEnd={!isWon ? handleTouchEnd : undefined}
               />
             );
           })}
         </div>
 
         <div className="stage-info-container">
-          <div className="stage-title-container">
-            <h2 className="stage-title">{stage.english}</h2>
-            {stage.chinese && (
+          <h2 className="stage-title">{stage.english}</h2>
+          {stage.chinese && (
+            <div className="stage-pronunciation-detail">
+              {getPronunciation(stage.chinese)?.jyutping || ''}
               <button
                 className="audio-button"
                 onClick={() => {
@@ -803,11 +807,6 @@ function GameView({ stage, onComplete }) {
               >
                 🔊
               </button>
-            )}
-          </div>
-          {stage.chinese && (
-            <div className="stage-pronunciation-detail">
-              {getPronunciation(stage.chinese)?.jyutping || ''}
             </div>
           )}
         </div>
