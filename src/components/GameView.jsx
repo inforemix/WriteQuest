@@ -8,7 +8,7 @@ import { playCantonesePronunciation, getPronunciation } from '../utils/cantonese
 function GameView({ stage, onComplete, allStages }) {
   const { t } = useLanguage();
   const [pieces, setPieces] = useState([]);
-  const [moves, setMoves] = useState(0);
+  const [moves, setMoves] = useState(stage.mode === 'hard' ? 30 : 0);
   const [time, setTime] = useState(stage.mode === 'easy' ? 20 : 50);
   const [isWon, setIsWon] = useState(false);
   const [moveLimitExceeded, setMoveLimitExceeded] = useState(false);
@@ -207,8 +207,8 @@ function GameView({ stage, onComplete, allStages }) {
       return;
     }
 
-    // Check move limit for hard mode
-    if (moveLimit && moves >= moveLimit) {
+    // Check move limit for hard mode (moves count down from 30)
+    if (moveLimit && moves <= 0) {
       setMoveLimitExceeded(true);
       return;
     }
@@ -225,7 +225,15 @@ function GameView({ stage, onComplete, allStages }) {
     piece.displayRotation = piece.displayRotation + 90;
 
     setPieces(newPieces);
-    setMoves(m => m + 1);
+    // Decrement moves for hard mode, increment for easy mode
+    const newMoves = moveLimit ? moves - 1 : moves + 1;
+    setMoves(newMoves);
+
+    // Check if moves ran out after this move
+    if (moveLimit && newMoves <= 0) {
+      setMoveLimitExceeded(true);
+    }
+
     checkWin(newPieces);
 
     // Play rotation sound
@@ -236,7 +244,7 @@ function GameView({ stage, onComplete, allStages }) {
     setTimeExpired(false);
     setMoveLimitExceeded(false);
     setTime(stage.mode === 'easy' ? 20 : 50);
-    setMoves(0);
+    setMoves(stage.mode === 'hard' ? 30 : 0);
     setIsWon(false);
     initializePuzzle();
 
@@ -302,8 +310,8 @@ function GameView({ stage, onComplete, allStages }) {
   const handleDrop = (targetIndex) => {
     if (!isDraggable || draggedPiece === null) return;
 
-    // Check move limit for hard mode
-    if (moveLimit && moves >= moveLimit) {
+    // Check move limit for hard mode (moves count down from 30)
+    if (moveLimit && moves <= 0) {
       setMoveLimitExceeded(true);
       setDraggedPiece(null);
       setDraggedFromIndex(null);
@@ -323,7 +331,15 @@ function GameView({ stage, onComplete, allStages }) {
     setPieces(newPieces);
     setDraggedPiece(null);
     setDraggedFromIndex(null);
-    setMoves(m => m + 1);
+    // Decrement moves for hard mode, increment for easy mode
+    const newMoves = moveLimit ? moves - 1 : moves + 1;
+    setMoves(newMoves);
+
+    // Check if moves ran out after this move
+    if (moveLimit && newMoves <= 0) {
+      setMoveLimitExceeded(true);
+    }
+
     checkWin(newPieces);
 
     // Prevent clicks immediately after drop
