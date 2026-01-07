@@ -783,25 +783,32 @@ function GameView({ stage, onComplete }) {
           })}
         </div>
 
-        <div className="stage-title-container">
-          <h2 className="stage-title">{stage.name}</h2>
+        <div className="stage-info-container">
+          <div className="stage-title-container">
+            <h2 className="stage-title">{stage.english}</h2>
+            {stage.chinese && (
+              <button
+                className="audio-button"
+                onClick={() => {
+                  playCantonesePronunciation(stage.chinese, (error) => {
+                    console.warn(error);
+                    // Show pronunciation text if audio unavailable
+                    const pronunciation = getPronunciation(stage.chinese);
+                    if (pronunciation) {
+                      alert(`Pronunciation: ${pronunciation.jyutping}\n${stage.english}`);
+                    }
+                  });
+                }}
+                title={`Hear pronunciation: ${stage.chinese}`}
+              >
+                🔊
+              </button>
+            )}
+          </div>
           {stage.chinese && (
-            <button
-              className="audio-button"
-              onClick={() => {
-                playCantonesePronunciation(stage.chinese, (error) => {
-                  console.warn(error);
-                  // Show pronunciation text if audio unavailable
-                  const pronunciation = getPronunciation(stage.chinese);
-                  if (pronunciation) {
-                    alert(`Pronunciation: ${pronunciation.jyutping}\n${stage.english}`);
-                  }
-                });
-              }}
-              title={`Hear pronunciation: ${stage.chinese}`}
-            >
-              🔊
-            </button>
+            <div className="stage-pronunciation-detail">
+              {getPronunciation(stage.chinese)?.jyutping || ''}
+            </div>
           )}
         </div>
 

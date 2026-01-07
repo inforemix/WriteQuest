@@ -201,39 +201,72 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Horizontal path connecting stages */}
+            {/* Desktop: Zigzag curved path connecting stages */}
             <path
               className="path-background desktop-path"
               d={(() => {
                 if (filteredStages.length < 2) return '';
 
-                // Horizontal layout - simple line from left to right
-                const startX = 100; // Start padding
-                const endX = (filteredStages.length - 1) * 240 + 100; // Each stage is ~240px apart
-                const y = '50%'; // Centered vertically
+                // Zigzag layout with 3 columns
+                let pathData = '';
+                filteredStages.forEach((stage, index) => {
+                  const row = Math.floor(index / 3);
+                  const col = index % 3;
+                  const isReverseRow = row % 2 === 1;
+                  const currentGridCol = isReverseRow ? (2 - col) : col;
 
-                return `M ${startX} ${y} L ${endX} ${y}`;
+                  // Calculate position
+                  const x = currentGridCol * 33.33 + 16.67;
+                  const y = row * 200 + 150;
+
+                  if (index === 0) {
+                    pathData = `M ${x}% ${y}px`;
+                  } else {
+                    const prevRow = Math.floor((index - 1) / 3);
+                    const prevCol = (index - 1) % 3;
+                    const isPrevReverseRow = prevRow % 2 === 1;
+                    const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
+                    const prevX = prevGridCol * 33.33 + 16.67;
+                    const prevY = prevRow * 200 + 150;
+
+                    // Use curved path
+                    const midY = (prevY + y) / 2;
+                    pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
+                  }
+                });
+                return pathData;
               })()}
               filter="url(#path-shadow)"
             />
 
-            {/* Desktop: Individual horizontal path segments */}
+            {/* Desktop: Individual zigzag path segments */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              // Horizontal layout
-              const startX = index * 240 + 160; // 240px gap + 160px offset
-              const endX = (index + 1) * 240 + 160;
-              const y = '50%';
+              const row = Math.floor(index / 3);
+              const col = index % 3;
+              const nextRow = Math.floor((index + 1) / 3);
+              const nextCol = (index + 1) % 3;
+
+              const isReverseRow = row % 2 === 1;
+              const isNextReverseRow = nextRow % 2 === 1;
+
+              const currentGridCol = isReverseRow ? (2 - col) : col;
+              const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
+
+              const startX = currentGridCol * 33.33 + 16.67;
+              const startY = row * 200 + 150;
+              const endX = nextGridCol * 33.33 + 16.67;
+              const endY = nextRow * 200 + 150;
+
+              // Curved path
+              const midY = (startY + endY) / 2;
 
               return (
-                <line
+                <path
                   key={`path-${index}`}
                   className="path-line desktop-path"
-                  x1={startX}
-                  y1={y}
-                  x2={endX}
-                  y2={y}
+                  d={`M ${startX}% ${startY}px C ${startX}% ${midY}px, ${endX}% ${midY}px, ${endX}% ${endY}px`}
                   filter="url(#path-shadow)"
                 />
               );
@@ -298,10 +331,20 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             const isPreviousCompleted = index === 0 || isStageCompleted(filteredStages[index - 1].id);
             const isUnlocked = isAdmin || isPreviousCompleted;
 
+            // Calculate zigzag order for desktop (3 columns)
+            const row = Math.floor(index / 3);
+            const col = index % 3;
+            const isReverseRow = row % 2 === 1;
+            const gridOrder = isReverseRow ? (row * 3) + (2 - col) : index;
+
+            // Determine if this is the center/highlighted stage (middle of current visible set)
+            const isCenterStage = index === Math.floor(filteredStages.length / 2);
+
             return (
               <div
                 key={stage.id}
-                className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''}`}
+                className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''} ${isCenterStage ? 'center-stage' : ''}`}
+                style={{ order: gridOrder }}
                 draggable={isAdmin}
                 onDragStart={(e) => handleDragStart(e, stage.id)}
                 onDragOver={(e) => handleDragOver(e, stage.id)}
@@ -331,11 +374,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 </div>
 
                 <div className="stage-label">{index + 1}. {stage.english}</div>
-                {stage.chinese && (
-                  <div className="stage-pronunciation">
-                    {getPronunciation(stage.chinese)?.jyutping || ''}
-                  </div>
-                )}
 
                 {isAdmin && (
                   <div className="admin-controls">
