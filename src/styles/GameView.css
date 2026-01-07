@@ -1012,3 +1012,47 @@
     flex: 1 1 45%;
   }
 }
+
+/* Bot Character Animation */
+.bot-character {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform 1.2s ease-in-out, opacity 0.8s ease-in;
+  pointer-events: none;
+}
+
+.bot-character.bot-slide-out {
+  transform: translateX(150%);
+  opacity: 0;
+}
+
+.bot-image {
+  width: 150px;
+  height: auto;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  animation: botFloat 3s ease-in-out infinite;
+}
+
+@keyframes botFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .bot-image {
+    width: 100px;
+  }
+
+  .bot-character {
+    bottom: 15px;
+    right: 15px;
+  }
+}

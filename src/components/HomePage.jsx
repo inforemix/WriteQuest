@@ -76,7 +76,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
       <VideoModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
-        videoUrl="https://youtu.be/llbuZV0ft6Y?si=S9rzM5wgr3194kkh"
+        videoUrl="https://youtu.be/JYpicNsur7s"
       />
     </div>
   );

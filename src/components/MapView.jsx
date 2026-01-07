@@ -175,6 +175,26 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     }
   }, [isDraggingDrone, droneDragOffset]);
 
+  // Handle mouse wheel for horizontal scrolling
+  useEffect(() => {
+    const mapContainer = document.querySelector('.map-container');
+    if (!mapContainer) return;
+
+    const handleWheel = (e) => {
+      // Only apply horizontal scroll on desktop
+      if (window.innerWidth > 768) {
+        e.preventDefault();
+        mapContainer.scrollLeft += e.deltaY;
+      }
+    };
+
+    mapContainer.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      mapContainer.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   return (
     <div className="map-view">
       <div className="map-header">
