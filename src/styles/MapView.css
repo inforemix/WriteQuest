@@ -806,7 +806,7 @@
   }
 }
 
-/* Drone Hover Animation */
+/* Drone Animation - Always visible above center stage */
 .drone-container {
   position: absolute;
   top: 50%;
@@ -814,17 +814,16 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 5;
-  opacity: 0;
-  transition: opacity 0.4s ease, top 0.6s ease-out;
+  opacity: 1;
+  transition: top 0.6s ease-out, left 0.6s ease-out;
 }
 
-.stage-node:hover ~ .drone-container,
 .drone-container.active {
   opacity: 1;
 }
 
 .drone-image {
-  width: 180px;
+  width: 270px;
   height: auto;
   animation: droneFly 3s ease-in-out infinite;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
@@ -866,7 +865,7 @@
 
 @media (max-width: 768px) {
   .drone-image {
-    width: 120px;
+    width: 180px;
   }
 
   .drone-container {

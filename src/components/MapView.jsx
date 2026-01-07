@@ -11,7 +11,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [hoveredStageId, setHoveredStageId] = useState(null);
 
   useEffect(() => {
     // Set sky background CSS variable
@@ -351,8 +350,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, stage.id)}
                 onDragEnd={handleDragEnd}
-                onMouseEnter={() => setHoveredStageId(stage.id)}
-                onMouseLeave={() => setHoveredStageId(null)}
               >
                 <div style={{ position: 'relative' }}>
                   {completed && (
@@ -387,8 +384,8 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           })
         )}
 
-        {/* Drone Animation - appears on hover */}
-        {hoveredStageId && (
+        {/* Drone Animation - always visible above center piece */}
+        {filteredStages.length > 0 && (
           <div className="drone-container active">
             <img
               src={getAssetPath('UI/drone.png')}
