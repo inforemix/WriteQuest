@@ -35,6 +35,20 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         '--bg-image-mobile': `url(${getAssetPath('UI/mobile-graphic.jpg')})`
       }}
     >
+      {/* Video overlay with soft-light blend mode */}
+      <video
+        className="homepage-video-overlay"
+        autoPlay
+        loop
+        muted
+        playsInline
+        onError={(e) => {
+          console.error('Video failed to load');
+        }}
+      >
+        <source src={getAssetPath('UI/Web-Homepage-Aplha.mp4')} type="video/mp4" />
+      </video>
+
       <div className="home-content">
         <img src={getAssetPath('UI/title.png')} alt="Write Aqua" className="game-title-image" />
 
@@ -76,7 +90,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
       <VideoModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
-        videoUrl="https://youtu.be/llbuZV0ft6Y?si=S9rzM5wgr3194kkh"
+        videoUrl="https://youtu.be/JYpicNsur7s"
       />
     </div>
   );

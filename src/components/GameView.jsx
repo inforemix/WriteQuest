@@ -5,7 +5,7 @@ import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
 import { playCantonesePronunciation, getPronunciation } from '../utils/cantoneseAudio';
 
-function GameView({ stage, onComplete }) {
+function GameView({ stage, onComplete, allStages }) {
   const { t } = useLanguage();
   const [pieces, setPieces] = useState([]);
   const [moves, setMoves] = useState(0);
@@ -22,6 +22,7 @@ function GameView({ stage, onComplete }) {
   const [justDropped, setJustDropped] = useState(false);
   const [hintCount, setHintCount] = useState(0);
   const [touchDragTarget, setTouchDragTarget] = useState(null);
+  const [isLastEasyPuzzle, setIsLastEasyPuzzle] = useState(false);
   const timerRef = useRef();
   const hintTimerRef = useRef();
   const hintCountdownRef = useRef();
@@ -30,6 +31,22 @@ function GameView({ stage, onComplete }) {
   const gridSize = stage.mode === 'easy' ? 2 : 3;
   const isDraggable = true; // Enable drag-drop for both modes
   const moveLimit = stage.mode === 'hard' ? 30 : null; // Hard mode has 30 move limit
+
+  // Check if this is the last easy puzzle to complete
+  useEffect(() => {
+    if (stage.mode === 'easy' && allStages) {
+      const easyStages = allStages.filter(s => s.mode === 'easy');
+      const completedEasyStages = easyStages.filter(s => {
+        if (s.id === stage.id) return false; // Exclude current stage
+        const completedKey = `completed-${s.id}`;
+        return localStorage.getItem(completedKey) === 'true';
+      });
+
+      // This is the last puzzle if all other easy puzzles are completed
+      const isLast = completedEasyStages.length === easyStages.length - 1;
+      setIsLastEasyPuzzle(isLast);
+    }
+  }, [stage, allStages]);
 
   useEffect(() => {
     // Set background CSS variables
@@ -762,31 +779,35 @@ function GameView({ stage, onComplete }) {
                   ${piece.rotation === 0 && piece.currentIndex === piece.originalIndex ? 'correct' : ''}
                   ${isBeingDragged ? 'dragging' : ''}
                   ${isHollowSlot ? 'hollow-slot' : ''}
-                  ${isDropTarget ? 'drop-target' : ''}`}
+                  ${isDropTarget ? 'drop-target' : ''}
+                  ${isWon ? 'puzzle-complete' : ''}`}
                 style={{
                   backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
                   transform: isBeingDragged ? 'scale(1.15)' : `rotate(${piece.displayRotation}deg)`,
-                  transition: isBeingDragged ? 'none' : undefined
+                  transition: isBeingDragged ? 'none' : undefined,
+                  cursor: isWon ? 'default' : undefined,
+                  pointerEvents: isWon ? 'none' : 'auto'
                 }}
                 data-current-index={piece.currentIndex}
-                onClick={(e) => handleRotate(piece.originalIndex, e)}
-                draggable={isDraggable}
-                onDragStart={() => handleDragStart(piece.currentIndex, index)}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDrop(piece.currentIndex)}
-                onDragEnd={handleDragEnd}
-                onTouchStart={(e) => handleTouchStart(e, piece.currentIndex, index)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                onClick={(e) => !isWon && handleRotate(piece.originalIndex, e)}
+                draggable={isDraggable && !isWon}
+                onDragStart={() => !isWon && handleDragStart(piece.currentIndex, index)}
+                onDragOver={!isWon ? handleDragOver : undefined}
+                onDrop={() => !isWon && handleDrop(piece.currentIndex)}
+                onDragEnd={!isWon ? handleDragEnd : undefined}
+                onTouchStart={(e) => !isWon && handleTouchStart(e, piece.currentIndex, index)}
+                onTouchMove={!isWon ? handleTouchMove : undefined}
+                onTouchEnd={!isWon ? handleTouchEnd : undefined}
               />
             );
           })}
         </div>
 
         <div className="stage-info-container">
-          <div className="stage-title-container">
-            <h2 className="stage-title">{stage.english}</h2>
-            {stage.chinese && (
+          <h2 className="stage-title">{stage.english}</h2>
+          {stage.chinese && (
+            <div className="stage-pronunciation-detail">
+              {getPronunciation(stage.chinese)?.jyutping || ''}
               <button
                 className="audio-button"
                 onClick={() => {
@@ -803,11 +824,6 @@ function GameView({ stage, onComplete }) {
               >
                 🔊
               </button>
-            )}
-          </div>
-          {stage.chinese && (
-            <div className="stage-pronunciation-detail">
-              {getPronunciation(stage.chinese)?.jyutping || ''}
             </div>
           )}
         </div>
@@ -823,21 +839,51 @@ function GameView({ stage, onComplete }) {
       </div>
 
       {isWon && (
-        <div className="win-modal">
-          <div className="win-title">{t('puzzleComplete')}</div>
-          <div className="win-stats">
-            <div className="win-stat">
-              <div className="win-stat-value">{formatTime(time)}</div>
-              <div className="win-stat-label">{t('timeRemaining')}</div>
-            </div>
-            <div className="win-stat">
-              <div className="win-stat-value">{moves}</div>
-              <div className="win-stat-label">{t('moves')}</div>
-            </div>
+        <>
+          {/* Win celebration video for last easy mode puzzle */}
+          {stage.mode === 'easy' && isLastEasyPuzzle && (
+            <video
+              className="win-celebration-video"
+              autoPlay
+              muted={false}
+              playsInline
+              onEnded={(e) => {
+                e.target.style.display = 'none';
+              }}
+              onError={(e) => {
+                console.error('Win video failed to load');
+                e.target.style.display = 'none';
+              }}
+            >
+              <source src={getAssetPath('UI/win.mp4.mp4')} type="video/mp4" />
+            </video>
+          )}
+
+          {/* Bot character next to success popup */}
+          <div className="bot-character bot-appear">
+            <img
+              src={getAssetPath('UI/bot.png')}
+              alt="Bot Character"
+              className="bot-image"
+            />
           </div>
-          {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
-          <button className="win-button" onClick={onComplete}>{t('continue')}</button>
-        </div>
+
+          <div className="win-modal">
+            <div className="win-title">{t('puzzleComplete')}</div>
+            <div className="win-stats">
+              <div className="win-stat">
+                <div className="win-stat-value">{formatTime(time)}</div>
+                <div className="win-stat-label">{t('timeRemaining')}</div>
+              </div>
+              <div className="win-stat">
+                <div className="win-stat-value">{moves}</div>
+                <div className="win-stat-label">{t('moves')}</div>
+              </div>
+            </div>
+            {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
+            <button className="win-button" onClick={onComplete}>{t('continue')}</button>
+          </div>
+        </>
       )}
 
       {timeExpired && (
@@ -903,27 +949,6 @@ function GameView({ stage, onComplete }) {
         </div>
       )}
 
-      {/* Shop Items Ticker Slider at bottom */}
-      <div className="shop-ticker">
-        <div className="shop-ticker-track">
-          <div className="shop-ticker-items">
-            <img src={getAssetPath('puzzles/shop/tool1.jpg')} alt="Tool 1" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool2.jpg')} alt="Tool 2" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool3.jpg')} alt="Tool 3" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool4.jpg')} alt="Tool 4" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool5.jpg')} alt="Tool 5" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool6.jpg')} alt="Tool 6" className="shop-item" />
-            {/* Duplicate for seamless loop */}
-            <img src={getAssetPath('puzzles/shop/tool1.jpg')} alt="Tool 1" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool2.jpg')} alt="Tool 2" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool3.jpg')} alt="Tool 3" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool4.jpg')} alt="Tool 4" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool5.jpg')} alt="Tool 5" className="shop-item" />
-            <img src={getAssetPath('puzzles/shop/tool6.jpg')} alt="Tool 6" className="shop-item" />
-          </div>
-        </div>
-        <div className="shop-ticker-title">{t('specialTools')}</div>
-      </div>
     </div>
   );
 }

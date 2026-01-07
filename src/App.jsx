@@ -93,6 +93,7 @@ function App() {
           <GameView
             stage={currentStage}
             onComplete={handleGameComplete}
+            allStages={stages}
           />
         )}
       </div>

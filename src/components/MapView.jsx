@@ -11,7 +11,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [draggedStageId, setDraggedStageId] = useState(null);
   const [dragOverStageId, setDragOverStageId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [hoveredStageId, setHoveredStageId] = useState(null);
+  const [dronePosition, setDronePosition] = useState({ x: 50, y: 35 }); // Position as percentages (y: 35% is ~250px higher than center)
+  const [isDraggingDrone, setIsDraggingDrone] = useState(false);
+  const [droneDragOffset, setDroneDragOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Set sky background CSS variable
@@ -127,6 +129,170 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     setDragOverStageId(null);
   };
 
+  // Drone drag handlers
+  const handleDroneMouseDown = (e) => {
+    e.preventDefault();
+    setIsDraggingDrone(true);
+
+    // Use map-view (whole screen) for positioning
+    const container = document.querySelector('.map-view');
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const offsetX = e.clientX - (rect.left + (dronePosition.x / 100) * rect.width);
+    const offsetY = e.clientY - (rect.top + (dronePosition.y / 100) * rect.height);
+
+    setDroneDragOffset({ x: offsetX, y: offsetY });
+  };
+
+  const handleDroneMouseMove = (e) => {
+    if (!isDraggingDrone) return;
+
+    // Use map-view (whole screen) instead of map-container
+    const container = document.querySelector('.map-view');
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left - droneDragOffset.x) / rect.width) * 100;
+    const y = ((e.clientY - rect.top - droneDragOffset.y) / rect.height) * 100;
+
+    // Constrain to viewport bounds
+    const constrainedX = Math.max(0, Math.min(100, x));
+    const constrainedY = Math.max(0, Math.min(100, y));
+
+    setDronePosition({ x: constrainedX, y: constrainedY });
+  };
+
+  const handleDroneMouseUp = () => {
+    setIsDraggingDrone(false);
+  };
+
+  useEffect(() => {
+    if (isDraggingDrone) {
+      window.addEventListener('mousemove', handleDroneMouseMove);
+      window.addEventListener('mouseup', handleDroneMouseUp);
+
+      return () => {
+        window.removeEventListener('mousemove', handleDroneMouseMove);
+        window.removeEventListener('mouseup', handleDroneMouseUp);
+      };
+    }
+  }, [isDraggingDrone, droneDragOffset]);
+
+  // Handle mouse wheel, touch swipe, and drag for horizontal scrolling
+  useEffect(() => {
+    const mapContainer = document.querySelector('.map-container');
+    if (!mapContainer) return;
+
+    let isScrolling = false;
+    let scrollVelocity = 0;
+    let animationFrame = null;
+
+    // Touch and drag state
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    const smoothScroll = () => {
+      if (Math.abs(scrollVelocity) > 0.5) {
+        mapContainer.scrollLeft += scrollVelocity;
+        scrollVelocity *= 0.85; // Momentum decay
+        animationFrame = requestAnimationFrame(smoothScroll);
+      } else {
+        isScrolling = false;
+        scrollVelocity = 0;
+      }
+    };
+
+    // Mouse wheel handler
+    const handleWheel = (e) => {
+      // Only apply horizontal scroll on desktop
+      if (window.innerWidth > 768) {
+        e.preventDefault();
+
+        // Amplify scroll speed for more responsive feel
+        const scrollMultiplier = 2.5;
+        scrollVelocity = e.deltaY * scrollMultiplier;
+
+        if (!isScrolling) {
+          isScrolling = true;
+          animationFrame = requestAnimationFrame(smoothScroll);
+        }
+      }
+    };
+
+    // Mouse drag handlers
+    const handleMouseDown = (e) => {
+      // Only on desktop
+      if (window.innerWidth > 768) {
+        isDragging = true;
+        mapContainer.style.cursor = 'grabbing';
+        startX = e.pageX - mapContainer.offsetLeft;
+        scrollLeft = mapContainer.scrollLeft;
+      }
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - mapContainer.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      mapContainer.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      mapContainer.style.cursor = 'grab';
+    };
+
+    const handleMouseLeave = () => {
+      isDragging = false;
+      mapContainer.style.cursor = 'grab';
+    };
+
+    // Touch swipe handlers
+    let touchStartX = 0;
+    let touchScrollLeft = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].pageX;
+      touchScrollLeft = mapContainer.scrollLeft;
+    };
+
+    const handleTouchMove = (e) => {
+      const x = e.touches[0].pageX;
+      const walk = (touchStartX - x) * 1.5; // Scroll speed multiplier
+      mapContainer.scrollLeft = touchScrollLeft + walk;
+    };
+
+    // Add event listeners
+    mapContainer.addEventListener('wheel', handleWheel, { passive: false });
+    mapContainer.addEventListener('mousedown', handleMouseDown);
+    mapContainer.addEventListener('mousemove', handleMouseMove);
+    mapContainer.addEventListener('mouseup', handleMouseUp);
+    mapContainer.addEventListener('mouseleave', handleMouseLeave);
+    mapContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+    mapContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+    // Set cursor style
+    if (window.innerWidth > 768) {
+      mapContainer.style.cursor = 'grab';
+    }
+
+    return () => {
+      mapContainer.removeEventListener('wheel', handleWheel);
+      mapContainer.removeEventListener('mousedown', handleMouseDown);
+      mapContainer.removeEventListener('mousemove', handleMouseMove);
+      mapContainer.removeEventListener('mouseup', handleMouseUp);
+      mapContainer.removeEventListener('mouseleave', handleMouseLeave);
+      mapContainer.removeEventListener('touchstart', handleTouchStart);
+      mapContainer.removeEventListener('touchmove', handleTouchMove);
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, []);
+
   return (
     <div className="map-view">
       <div className="map-header">
@@ -201,72 +367,32 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Zigzag curved path connecting stages */}
-            <path
-              className="path-background desktop-path"
-              d={(() => {
-                if (filteredStages.length < 2) return '';
-
-                // Zigzag layout with 3 columns
-                let pathData = '';
-                filteredStages.forEach((stage, index) => {
-                  const row = Math.floor(index / 3);
-                  const col = index % 3;
-                  const isReverseRow = row % 2 === 1;
-                  const currentGridCol = isReverseRow ? (2 - col) : col;
-
-                  // Calculate position
-                  const x = currentGridCol * 33.33 + 16.67;
-                  const y = row * 180 + 120;
-
-                  if (index === 0) {
-                    pathData = `M ${x}% ${y}px`;
-                  } else {
-                    const prevRow = Math.floor((index - 1) / 3);
-                    const prevCol = (index - 1) % 3;
-                    const isPrevReverseRow = prevRow % 2 === 1;
-                    const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
-                    const prevX = prevGridCol * 33.33 + 16.67;
-                    const prevY = prevRow * 180 + 120;
-
-                    // Use curved path
-                    const midY = (prevY + y) / 2;
-                    pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
-                  }
-                });
-                return pathData;
-              })()}
-              filter="url(#path-shadow)"
-            />
-
-            {/* Desktop: Individual zigzag path segments */}
+            {/* Desktop: Zigzag curved line connecting stages */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              const row = Math.floor(index / 3);
-              const col = index % 3;
-              const nextRow = Math.floor((index + 1) / 3);
-              const nextCol = (index + 1) % 3;
+              const baseX = 60; // Starting X position
+              const spacing = (80 + 120); // gap + circle width
+              const zigzagAmplitude = 15; // Percentage for up/down movement
 
-              const isReverseRow = row % 2 === 1;
-              const isNextReverseRow = nextRow % 2 === 1;
+              // Current stage position
+              const isEven = index % 2 === 0;
+              const currentY = isEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const currentX = baseX + (index * spacing);
 
-              const currentGridCol = isReverseRow ? (2 - col) : col;
-              const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
+              // Next stage position
+              const isNextEven = (index + 1) % 2 === 0;
+              const nextY = isNextEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const nextX = baseX + ((index + 1) * spacing);
 
-              const startX = currentGridCol * 33.33 + 16.67;
-              const startY = row * 180 + 120;
-              const endX = nextGridCol * 33.33 + 16.67;
-              const endY = nextRow * 180 + 120;
-
-              // Curved path
-              const midY = (startY + endY) / 2;
+              // Control point for curved line
+              const midX = (currentX + nextX) / 2;
 
               return (
                 <path
                   key={`path-${index}`}
                   className="path-line desktop-path"
-                  d={`M ${startX}% ${startY}px C ${startX}% ${midY}px, ${endX}% ${midY}px, ${endX}% ${endY}px`}
+                  d={`M ${currentX} ${currentY}% Q ${midX} ${(currentY + nextY) / 2}% ${nextX} ${nextY}%`}
                   filter="url(#path-shadow)"
                 />
               );
@@ -331,12 +457,6 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             const isPreviousCompleted = index === 0 || isStageCompleted(filteredStages[index - 1].id);
             const isUnlocked = isAdmin || isPreviousCompleted;
 
-            // Calculate zigzag order for desktop (3 columns)
-            const row = Math.floor(index / 3);
-            const col = index % 3;
-            const isReverseRow = row % 2 === 1;
-            const gridOrder = isReverseRow ? (row * 3) + (2 - col) : index;
-
             // Determine if this is the center/highlighted stage (middle of current visible set)
             const isCenterStage = index === Math.floor(filteredStages.length / 2);
 
@@ -344,15 +464,12 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               <div
                 key={stage.id}
                 className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''} ${isCenterStage ? 'center-stage' : ''}`}
-                style={{ order: gridOrder }}
                 draggable={isAdmin}
                 onDragStart={(e) => handleDragStart(e, stage.id)}
                 onDragOver={(e) => handleDragOver(e, stage.id)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, stage.id)}
                 onDragEnd={handleDragEnd}
-                onMouseEnter={() => setHoveredStageId(stage.id)}
-                onMouseLeave={() => setHoveredStageId(null)}
               >
                 <div style={{ position: 'relative' }}>
                   {completed && (
@@ -387,9 +504,18 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
           })
         )}
 
-        {/* Drone Animation - appears on hover */}
-        {hoveredStageId && (
-          <div className="drone-container active">
+        {/* Drone Animation - draggable anywhere on the page */}
+        {filteredStages.length > 0 && (
+          <div
+            className={`drone-container active ${isDraggingDrone ? 'dragging' : ''}`}
+            style={{
+              left: `${dronePosition.x}%`,
+              top: `${dronePosition.y}%`,
+              transform: isDraggingDrone ? 'translate(-50%, -50%) scale(1.05)' : 'translate(-50%, -50%)',
+              cursor: isDraggingDrone ? 'grabbing' : 'grab'
+            }}
+            onMouseDown={handleDroneMouseDown}
+          >
             <img
               src={getAssetPath('UI/drone.png')}
               alt="Drone"

@@ -234,6 +234,8 @@
   gap: 8px;
   margin-top: 20px;
   margin-bottom: 15px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .stage-title-container {
@@ -252,27 +254,33 @@
 }
 
 .stage-pronunciation-detail {
+  font-family: 'GROBOLD', sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #3498db;
+  color: #ffffff;
   text-align: center;
-  font-style: italic;
-  background: rgba(52, 152, 219, 0.15);
+  font-style: normal;
+  background: rgba(255, 255, 255, 0.25);
   padding: 6px 20px;
   border-radius: 20px;
-  border: 2px solid rgba(52, 152, 219, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
 }
 
 .audio-button {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: rgba(255, 255, 255, 0.3);
   border: none;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  font-size: 1.3rem;
+  width: 35px;
+  height: 35px;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -281,13 +289,13 @@
 
 .audio-button:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .audio-button:active {
   transform: scale(0.95);
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* Shop Ticker Slider - Fixed to bottom */
@@ -884,6 +892,7 @@
 
   .stage-info-container {
     margin-top: 15px;
+    margin-left: 0;
   }
 
   .stage-title {
@@ -981,6 +990,7 @@
   .stage-info-container {
     margin-top: 12px;
     gap: 6px;
+    margin-left: 0;
   }
 
   .stage-title {
@@ -1005,5 +1015,105 @@
 
   .stat {
     flex: 1 1 45%;
+  }
+}
+
+/* Bot Character Animation - appears next to success modal */
+.bot-character {
+  position: fixed;
+  top: 50%;
+  right: calc(50% + 250px);
+  transform: translate(0, -50%);
+  z-index: 3001;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bot-character.bot-appear {
+  animation: botSlideIn 0.6s ease-out forwards, botFloat 3s ease-in-out 0.6s infinite;
+}
+
+.bot-image {
+  width: 180px;
+  height: auto;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes botSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(100px, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+@keyframes botFloat {
+  0%, 100% {
+    transform: translate(0, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(0, -50%) translateY(-15px);
+  }
+}
+
+@media (max-width: 768px) {
+  .bot-image {
+    width: 120px;
+  }
+
+  .bot-character {
+    top: auto;
+    bottom: 60%;
+    right: 10px;
+    transform: translate(0, 0);
+  }
+
+  .bot-character.bot-appear {
+    animation: botSlideInMobile 0.6s ease-out forwards, botFloatMobile 3s ease-in-out 0.6s infinite;
+  }
+
+  @keyframes botSlideInMobile {
+    0% {
+      opacity: 0;
+      transform: translate(100px, 0) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+  }
+
+  @keyframes botFloatMobile {
+    0%, 100% {
+      transform: translate(0, 0) translateY(0);
+    }
+    50% {
+      transform: translate(0, 0) translateY(-10px);
+    }
+  }
+}
+
+/* Win celebration video */
+.win-celebration-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 9998;
+  pointer-events: none;
+  animation: fadeInVideo 0.5s ease-in;
+}
+
+@keyframes fadeInVideo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
