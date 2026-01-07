@@ -8,7 +8,7 @@ import { playCantonesePronunciation, getPronunciation } from '../utils/cantonese
 function GameView({ stage, onComplete, allStages }) {
   const { t } = useLanguage();
   const [pieces, setPieces] = useState([]);
-  const [moves, setMoves] = useState(stage.mode === 'hard' ? 30 : 0);
+  const [moves, setMoves] = useState(stage.mode === 'hard' ? 30 : 15);
   const [time, setTime] = useState(stage.mode === 'easy' ? 20 : 50);
   const [isWon, setIsWon] = useState(false);
   const [moveLimitExceeded, setMoveLimitExceeded] = useState(false);
@@ -31,7 +31,7 @@ function GameView({ stage, onComplete, allStages }) {
   const touchStartPos = useRef({ x: 0, y: 0 });
   const gridSize = stage.mode === 'easy' ? 2 : 3;
   const isDraggable = true; // Enable drag-drop for both modes
-  const moveLimit = stage.mode === 'hard' ? 30 : null; // Hard mode has 30 move limit
+  const moveLimit = stage.mode === 'hard' ? 30 : 15; // Hard: 30, Easy: 15 moves countdown
 
   // Check if this is the last easy puzzle to complete
   useEffect(() => {
@@ -207,8 +207,8 @@ function GameView({ stage, onComplete, allStages }) {
       return;
     }
 
-    // Check move limit for hard mode (moves count down from 30)
-    if (moveLimit && moves <= 0) {
+    // Check move limit (both modes count down)
+    if (moves <= 0) {
       setMoveLimitExceeded(true);
       return;
     }
@@ -225,12 +225,12 @@ function GameView({ stage, onComplete, allStages }) {
     piece.displayRotation = piece.displayRotation + 90;
 
     setPieces(newPieces);
-    // Decrement moves for hard mode, increment for easy mode
-    const newMoves = moveLimit ? moves - 1 : moves + 1;
+    // Decrement moves (both modes count down)
+    const newMoves = moves - 1;
     setMoves(newMoves);
 
     // Check if moves ran out after this move
-    if (moveLimit && newMoves <= 0) {
+    if (newMoves <= 0) {
       setMoveLimitExceeded(true);
     }
 
@@ -244,7 +244,7 @@ function GameView({ stage, onComplete, allStages }) {
     setTimeExpired(false);
     setMoveLimitExceeded(false);
     setTime(stage.mode === 'easy' ? 20 : 50);
-    setMoves(stage.mode === 'hard' ? 30 : 0);
+    setMoves(stage.mode === 'hard' ? 30 : 15);
     setIsWon(false);
     initializePuzzle();
 
@@ -310,8 +310,8 @@ function GameView({ stage, onComplete, allStages }) {
   const handleDrop = (targetIndex) => {
     if (!isDraggable || draggedPiece === null) return;
 
-    // Check move limit for hard mode (moves count down from 30)
-    if (moveLimit && moves <= 0) {
+    // Check move limit (both modes count down)
+    if (moves <= 0) {
       setMoveLimitExceeded(true);
       setDraggedPiece(null);
       setDraggedFromIndex(null);
@@ -331,12 +331,12 @@ function GameView({ stage, onComplete, allStages }) {
     setPieces(newPieces);
     setDraggedPiece(null);
     setDraggedFromIndex(null);
-    // Decrement moves for hard mode, increment for easy mode
-    const newMoves = moveLimit ? moves - 1 : moves + 1;
+    // Decrement moves (both modes count down)
+    const newMoves = moves - 1;
     setMoves(newMoves);
 
     // Check if moves ran out after this move
-    if (moveLimit && newMoves <= 0) {
+    if (newMoves <= 0) {
       setMoveLimitExceeded(true);
     }
 
@@ -958,7 +958,7 @@ function GameView({ stage, onComplete, allStages }) {
         <div className="time-expired-modal">
           <div className="time-expired-emoji">🎯</div>
           <div className="time-expired-title">Move Limit Reached!</div>
-          <p className="time-expired-text">You've used all 30 moves. Try again!</p>
+          <p className="time-expired-text">You've used all {moveLimit} moves. Try again!</p>
           <div className="time-expired-actions">
             <button className="restart-button" onClick={handleRestartPuzzle}>
               🔄 {t('restartPuzzle')}

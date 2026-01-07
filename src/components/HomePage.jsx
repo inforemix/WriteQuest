@@ -46,7 +46,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
           console.error('Video failed to load');
         }}
       >
-        <source src={getAssetPath('UI/Web-Homepage-Aplha.mp4')} type="video/mp4" />
+        <source src={getAssetPath('UI/Web-Homepage-overlay.mp4')} type="video/mp4" />
       </video>
 
       <div className="home-content">
