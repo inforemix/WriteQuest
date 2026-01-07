@@ -113,17 +113,41 @@
   box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
-/* Map path container - Desktop: zigzag grid layout */
+/* Map path container - Desktop: horizontal scroll layout */
 @media (min-width: 769px) {
   .map-container {
     position: relative;
-    max-width: 900px;
+    width: 100%;
     margin: 0 auto;
     padding: 40px 20px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 60px 40px;
-    align-items: start;
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #e5e7eb;
+  }
+
+  .map-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .map-container::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 10px;
+  }
+
+  .map-container::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 10px;
+  }
+
+  .map-container::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
   }
 }
 
@@ -194,6 +218,14 @@
   align-items: center;
   gap: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0; /* Prevent shrinking in horizontal scroll */
+}
+
+/* Desktop: Minimum width for horizontal scroll */
+@media (min-width: 769px) {
+  .stage-node {
+    min-width: 180px;
+  }
 }
 
 .stage-node.draggable {
@@ -334,6 +366,23 @@
   color: white;
   text-align: center;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  max-width: 140px;
+  margin-bottom: 4px;
+}
+
+/* Stage pronunciation (Jyutping) */
+.stage-pronunciation {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  font-style: italic;
+  background: rgba(52, 152, 219, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 140px;
 }
 
@@ -498,6 +547,12 @@
     max-width: 120px;
   }
 
+  .stage-pronunciation {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    max-width: 120px;
+  }
+
   .completed-checkmark {
     width: 34px;
     height: 34px;
@@ -590,6 +645,11 @@
 
   .stage-label {
     font-size: 1rem;
+  }
+
+  .stage-pronunciation {
+    font-size: 0.75rem;
+    padding: 2px 8px;
   }
 
   .completed-checkmark {

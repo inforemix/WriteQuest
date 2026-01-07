@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import UploadModal from './UploadModal';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getPronunciation } from '../utils/cantoneseAudio';
 import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate, onModeChange }) {
@@ -200,102 +201,42 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
               </filter>
             </defs>
 
-            {/* Desktop: Continuous background path */}
+            {/* Desktop: Horizontal path connecting stages */}
             <path
               className="path-background desktop-path"
               d={(() => {
                 if (filteredStages.length < 2) return '';
 
-                let pathData = '';
-                filteredStages.forEach((stage, index) => {
-                  const row = Math.floor(index / 3);
-                  const col = index % 3;
-                  const isReverseRow = row % 2 === 1;
-                  const currentGridCol = isReverseRow ? (2 - col) : col;
-                  const x = currentGridCol * 33.33 + 16.67;
-                  const y = row * 160 + 80;
+                // Horizontal layout - simple line from left to right
+                const startX = 100; // Start padding
+                const endX = (filteredStages.length - 1) * 240 + 100; // Each stage is ~240px apart
+                const y = '50%'; // Centered vertically
 
-                  if (index === 0) {
-                    pathData = `M ${x}% ${y}px`;
-                  } else {
-                    const prevRow = Math.floor((index - 1) / 3);
-                    const prevCol = (index - 1) % 3;
-                    const isPrevReverseRow = prevRow % 2 === 1;
-                    const prevGridCol = isPrevReverseRow ? (2 - prevCol) : prevCol;
-                    const prevX = prevGridCol * 33.33 + 16.67;
-                    const prevY = prevRow * 160 + 80;
-
-                    if (row !== prevRow) {
-                      // Curved transition between rows
-                      const midY = (prevY + y) / 2;
-                      pathData += ` C ${prevX}% ${midY}px, ${x}% ${midY}px, ${x}% ${y}px`;
-                    } else {
-                      // Straight line in same row
-                      pathData += ` L ${x}% ${y}px`;
-                    }
-                  }
-                });
-                return pathData;
+                return `M ${startX} ${y} L ${endX} ${y}`;
               })()}
               filter="url(#path-shadow)"
             />
 
-            {/* Desktop: Individual path segments */}
+            {/* Desktop: Individual horizontal path segments */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              const row = Math.floor(index / 3);
-              const col = index % 3;
-              const nextRow = Math.floor((index + 1) / 3);
-              const nextCol = (index + 1) % 3;
+              // Horizontal layout
+              const startX = index * 240 + 160; // 240px gap + 160px offset
+              const endX = (index + 1) * 240 + 160;
+              const y = '50%';
 
-              const isReverseRow = row % 2 === 1;
-              const isNextReverseRow = nextRow % 2 === 1;
-
-              // Calculate actual grid positions (accounting for zigzag)
-              const currentGridCol = isReverseRow ? (2 - col) : col;
-              const nextGridCol = isNextReverseRow ? (2 - nextCol) : nextCol;
-
-              // Position calculation (percentage for desktop, fixed for mobile)
-              const startX = currentGridCol * 33.33 + 16.67;
-              const startY = row * 160 + 80; // Adjust for row height
-
-              const endX = nextGridCol * 33.33 + 16.67;
-              const endY = nextRow * 160 + 80;
-
-              // Check if transitioning to next row
-              const isRowTransition = nextRow !== row;
-
-              if (isRowTransition) {
-                // Curved path for row transitions
-                const midY = (startY + endY) / 2;
-                const controlX1 = startX;
-                const controlY1 = midY;
-                const controlX2 = endX;
-                const controlY2 = midY;
-
-                return (
-                  <path
-                    key={`path-${index}`}
-                    className="path-line desktop-path"
-                    d={`M ${startX}% ${startY}px C ${controlX1}% ${controlY1}px, ${controlX2}% ${controlY2}px, ${endX}% ${endY}px`}
-                    filter="url(#path-shadow)"
-                  />
-                );
-              } else {
-                // Straight line for same row
-                return (
-                  <line
-                    key={`path-${index}`}
-                    className="path-line desktop-path"
-                    x1={`${startX}%`}
-                    y1={`${startY}px`}
-                    x2={`${endX}%`}
-                    y2={`${endY}px`}
-                    filter="url(#path-shadow)"
-                  />
-                );
-              }
+              return (
+                <line
+                  key={`path-${index}`}
+                  className="path-line desktop-path"
+                  x1={startX}
+                  y1={y}
+                  x2={endX}
+                  y2={y}
+                  filter="url(#path-shadow)"
+                />
+              );
             })}
 
             {/* Mobile: Continuous background path */}
@@ -357,17 +298,10 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             const isPreviousCompleted = index === 0 || isStageCompleted(filteredStages[index - 1].id);
             const isUnlocked = isAdmin || isPreviousCompleted;
 
-            // Calculate zigzag order for desktop (3 columns)
-            const row = Math.floor(index / 3);
-            const col = index % 3;
-            const isReverseRow = row % 2 === 1;
-            const gridOrder = isReverseRow ? (row * 3) + (2 - col) : index;
-
             return (
               <div
                 key={stage.id}
                 className={`stage-node ${isAdmin ? 'draggable' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''} ${!isUnlocked ? 'locked' : ''}`}
-                style={{ order: gridOrder }}
                 draggable={isAdmin}
                 onDragStart={(e) => handleDragStart(e, stage.id)}
                 onDragOver={(e) => handleDragOver(e, stage.id)}
@@ -396,7 +330,12 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                   </div>
                 </div>
 
-                <div className="stage-label">{index + 1}. {stage.name}</div>
+                <div className="stage-label">{index + 1}. {stage.english}</div>
+                {stage.chinese && (
+                  <div className="stage-pronunciation">
+                    {getPronunciation(stage.chinese)?.jyutping || ''}
+                  </div>
+                )}
 
                 {isAdmin && (
                   <div className="admin-controls">
