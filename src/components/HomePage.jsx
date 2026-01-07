@@ -70,15 +70,16 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         </div>
       </div>
 
-      <div className="version-badge">v0.4</div>
-
-      <button
-        className="settings-button"
-        onClick={() => setShowSettings(true)}
-        title={t('settings')}
-      >
-        <img src={getAssetPath('UI/setting.png')} alt={t('settings')} className="button-icon" />
-      </button>
+      <div className="bottom-right-controls">
+        <div className="version-badge">v1</div>
+        <button
+          className="settings-button"
+          onClick={() => setShowSettings(true)}
+          title={t('settings')}
+        >
+          <img src={getAssetPath('UI/setting.png')} alt={t('settings')} className="button-icon" />
+        </button>
+      </div>
 
       <SettingsMenu
         isOpen={showSettings}

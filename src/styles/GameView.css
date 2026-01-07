@@ -55,6 +55,7 @@
 }
 
 .stat-value-compact {
+  font-family: "Google Sans", sans-serif;
   font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
@@ -77,6 +78,7 @@
 }
 
 .stat-label-compact {
+  font-family: "Google Sans", sans-serif;
   font-size: 1rem;
   color: #ffffff;
   font-weight: 600;
@@ -254,7 +256,7 @@
 }
 
 .stage-pronunciation-detail {
-  font-family: 'GROBOLD', sans-serif;
+  font-family: "Google Sans", sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffffff;
@@ -285,12 +287,15 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: #ffffff;
+  filter: grayscale(1) brightness(10);
 }
 
 .audio-button:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   background: rgba(255, 255, 255, 0.5);
+  filter: grayscale(1) brightness(10);
 }
 
 .audio-button:active {

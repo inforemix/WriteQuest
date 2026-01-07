@@ -525,6 +525,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 e.target.style.display = 'none';
               }}
             />
+            <div className="drone-speech-bubble">
+              drag me to scroll
+            </div>
           </div>
         )}
       </div>

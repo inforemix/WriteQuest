@@ -23,6 +23,7 @@ function GameView({ stage, onComplete, allStages }) {
   const [hintCount, setHintCount] = useState(0);
   const [touchDragTarget, setTouchDragTarget] = useState(null);
   const [isLastEasyPuzzle, setIsLastEasyPuzzle] = useState(false);
+  const [isLastHardPuzzle, setIsLastHardPuzzle] = useState(false);
   const timerRef = useRef();
   const hintTimerRef = useRef();
   const hintCountdownRef = useRef();
@@ -45,6 +46,22 @@ function GameView({ stage, onComplete, allStages }) {
       // This is the last puzzle if all other easy puzzles are completed
       const isLast = completedEasyStages.length === easyStages.length - 1;
       setIsLastEasyPuzzle(isLast);
+    }
+  }, [stage, allStages]);
+
+  // Check if this is the last hard puzzle to complete
+  useEffect(() => {
+    if (stage.mode === 'hard' && allStages) {
+      const hardStages = allStages.filter(s => s.mode === 'hard');
+      const completedHardStages = hardStages.filter(s => {
+        if (s.id === stage.id) return false; // Exclude current stage
+        const completedKey = `completed-${s.id}`;
+        return localStorage.getItem(completedKey) === 'true';
+      });
+
+      // This is the last puzzle if all other hard puzzles are completed
+      const isLast = completedHardStages.length === hardStages.length - 1;
+      setIsLastHardPuzzle(isLast);
     }
   }, [stage, allStages]);
 
@@ -856,6 +873,25 @@ function GameView({ stage, onComplete, allStages }) {
               }}
             >
               <source src={getAssetPath('UI/win.mp4.mp4')} type="video/mp4" />
+            </video>
+          )}
+
+          {/* Win celebration video for last hard mode puzzle */}
+          {stage.mode === 'hard' && isLastHardPuzzle && (
+            <video
+              className="win-celebration-video"
+              autoPlay
+              muted={false}
+              playsInline
+              onEnded={(e) => {
+                e.target.style.display = 'none';
+              }}
+              onError={(e) => {
+                console.error('Win Hard video failed to load');
+                e.target.style.display = 'none';
+              }}
+            >
+              <source src={getAssetPath('UI/Win-Hard.mp4')} type="video/mp4" />
             </video>
           )}
 
