@@ -377,7 +377,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
         <img
           src={getAssetPath(
             isMobile
-              ? (mode === 'easy' ? 'UI/mobile-hard.png' : 'UI/basic.png')
+              ? (mode === 'easy' ? 'UI/mobile-hard.png' : 'UI/Light Wood-easy.png')
               : (mode === 'easy' ? 'UI/Light Wood-hard.png' : 'UI/Light Wood-easy.png')
           )}
           alt={mode === 'easy' ? t('switchToHard') : t('switchToEasy')}
