@@ -700,15 +700,6 @@ function GameView({ stage, onComplete }) {
     <div className={`game-view ${isWon ? 'completed' : ''}`}>
       <canvas id="confetti-canvas"></canvas>
 
-      {/* Bot character that slides out on completion */}
-      <div className={`bot-character ${isWon ? 'bot-slide-out' : ''}`}>
-        <img
-          src={getAssetPath('UI/bot.png')}
-          alt="Bot Character"
-          className="bot-image"
-        />
-      </div>
-
       <div className="game-header">
         <button className="back-button" onClick={onComplete}>
           <img src={getAssetPath('UI/back.png')} alt="Back" className="back-icon" />
@@ -831,21 +822,32 @@ function GameView({ stage, onComplete }) {
       </div>
 
       {isWon && (
-        <div className="win-modal">
-          <div className="win-title">{t('puzzleComplete')}</div>
-          <div className="win-stats">
-            <div className="win-stat">
-              <div className="win-stat-value">{formatTime(time)}</div>
-              <div className="win-stat-label">{t('timeRemaining')}</div>
-            </div>
-            <div className="win-stat">
-              <div className="win-stat-value">{moves}</div>
-              <div className="win-stat-label">{t('moves')}</div>
-            </div>
+        <>
+          {/* Bot character next to success popup */}
+          <div className="bot-character bot-appear">
+            <img
+              src={getAssetPath('UI/bot.png')}
+              alt="Bot Character"
+              className="bot-image"
+            />
           </div>
-          {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
-          <button className="win-button" onClick={onComplete}>{t('continue')}</button>
-        </div>
+
+          <div className="win-modal">
+            <div className="win-title">{t('puzzleComplete')}</div>
+            <div className="win-stats">
+              <div className="win-stat">
+                <div className="win-stat-value">{formatTime(time)}</div>
+                <div className="win-stat-label">{t('timeRemaining')}</div>
+              </div>
+              <div className="win-stat">
+                <div className="win-stat-value">{moves}</div>
+                <div className="win-stat-label">{t('moves')}</div>
+              </div>
+            </div>
+            {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
+            <button className="win-button" onClick={onComplete}>{t('continue')}</button>
+          </div>
+        </>
       )}
 
       {timeExpired && (

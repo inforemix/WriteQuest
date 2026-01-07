@@ -234,6 +234,7 @@
   gap: 8px;
   margin-top: 20px;
   margin-bottom: 15px;
+  margin-left: 150px;
 }
 
 .stage-title-container {
@@ -889,6 +890,7 @@
 
   .stage-info-container {
     margin-top: 15px;
+    margin-left: 0;
   }
 
   .stage-title {
@@ -986,6 +988,7 @@
   .stage-info-container {
     margin-top: 12px;
     gap: 6px;
+    margin-left: 0;
   }
 
   .stage-title {
@@ -1013,46 +1016,80 @@
   }
 }
 
-/* Bot Character Animation */
+/* Bot Character Animation - appears next to success modal */
 .bot-character {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  opacity: 1;
-  transform: translateX(0);
-  transition: transform 1.2s ease-in-out, opacity 0.8s ease-in;
+  top: 50%;
+  right: calc(50% + 250px);
+  transform: translate(0, -50%);
+  z-index: 3001;
+  opacity: 0;
   pointer-events: none;
 }
 
-.bot-character.bot-slide-out {
-  transform: translateX(150%);
-  opacity: 0;
+.bot-character.bot-appear {
+  animation: botSlideIn 0.6s ease-out forwards, botFloat 3s ease-in-out 0.6s infinite;
 }
 
 .bot-image {
-  width: 150px;
+  width: 180px;
   height: auto;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-  animation: botFloat 3s ease-in-out infinite;
+}
+
+@keyframes botSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(100px, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+  }
 }
 
 @keyframes botFloat {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate(0, -50%) translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate(0, -50%) translateY(-15px);
   }
 }
 
 @media (max-width: 768px) {
   .bot-image {
-    width: 100px;
+    width: 120px;
   }
 
   .bot-character {
-    bottom: 15px;
-    right: 15px;
+    top: auto;
+    bottom: 60%;
+    right: 10px;
+    transform: translate(0, 0);
+  }
+
+  .bot-character.bot-appear {
+    animation: botSlideInMobile 0.6s ease-out forwards, botFloatMobile 3s ease-in-out 0.6s infinite;
+  }
+
+  @keyframes botSlideInMobile {
+    0% {
+      opacity: 0;
+      transform: translate(100px, 0) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+  }
+
+  @keyframes botFloatMobile {
+    0%, 100% {
+      transform: translate(0, 0) translateY(0);
+    }
+    50% {
+      transform: translate(0, 0) translateY(-10px);
+    }
   }
 }

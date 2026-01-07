@@ -175,16 +175,39 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
     }
   }, [isDraggingDrone, droneDragOffset]);
 
-  // Handle mouse wheel for horizontal scrolling
+  // Handle mouse wheel for horizontal scrolling with smooth momentum
   useEffect(() => {
     const mapContainer = document.querySelector('.map-container');
     if (!mapContainer) return;
+
+    let isScrolling = false;
+    let scrollVelocity = 0;
+    let animationFrame = null;
+
+    const smoothScroll = () => {
+      if (Math.abs(scrollVelocity) > 0.5) {
+        mapContainer.scrollLeft += scrollVelocity;
+        scrollVelocity *= 0.85; // Momentum decay
+        animationFrame = requestAnimationFrame(smoothScroll);
+      } else {
+        isScrolling = false;
+        scrollVelocity = 0;
+      }
+    };
 
     const handleWheel = (e) => {
       // Only apply horizontal scroll on desktop
       if (window.innerWidth > 768) {
         e.preventDefault();
-        mapContainer.scrollLeft += e.deltaY;
+
+        // Amplify scroll speed for more responsive feel
+        const scrollMultiplier = 2.5;
+        scrollVelocity = e.deltaY * scrollMultiplier;
+
+        if (!isScrolling) {
+          isScrolling = true;
+          animationFrame = requestAnimationFrame(smoothScroll);
+        }
       }
     };
 
@@ -192,6 +215,9 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
     return () => {
       mapContainer.removeEventListener('wheel', handleWheel);
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
     };
   }, []);
 
