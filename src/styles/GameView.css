@@ -305,6 +305,102 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* Inline Completion Info - shown below pinyin after puzzle complete */
+.completion-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: slideUp 0.5s ease-out;
+  width: 100%;
+  max-width: 350px;
+}
+
+.completion-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.completion-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.completion-stat-icon {
+  font-size: 1.5rem;
+}
+
+.completion-stat-value {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.completion-stat-label {
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: capitalize;
+}
+
+.completion-pb {
+  background: rgba(254, 243, 199, 0.3);
+  backdrop-filter: blur(10px);
+  color: #fbbf24;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  font-family: "Google Sans", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.completion-continue-btn {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px 24px;
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.completion-continue-btn:hover {
+  background: rgba(5, 150, 105, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Shop Ticker Slider - Fixed to bottom */
 .shop-ticker {
   position: fixed;
@@ -567,124 +663,6 @@
   50% {
     opacity: 0.6;
   }
-}
-
-/* Win Modal */
-/* Win Modal - Glassy Design */
-.win-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3000;
-  padding: 20px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.win-modal {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
-  text-align: center;
-  animation: scaleIn 0.3s ease-in-out;
-  max-width: 450px;
-  width: 90%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.win-emoji {
-  font-size: 4rem;
-  margin-bottom: 15px;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-}
-
-.win-title {
-  font-family: "Google Sans", sans-serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 20px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.win-stats {
-  display: flex;
-  justify-content: space-around;
-  gap: 30px;
-  margin: 25px 0;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.win-stat {
-  text-align: center;
-}
-
-.win-stat-value {
-  font-family: "Google Sans", sans-serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.win-stat-label {
-  font-family: "Google Sans", sans-serif;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 6px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.pb-indicator {
-  background: rgba(254, 243, 199, 0.3);
-  backdrop-filter: blur(10px);
-  color: #fbbf24;
-  padding: 10px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  font-family: "Google Sans", sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  margin-top: 15px;
-  display: inline-block;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.win-button {
-  font-family: "Google Sans", sans-serif;
-  width: 100%;
-  padding: 16px;
-  background: rgba(16, 185, 129, 0.9);
-  backdrop-filter: blur(10px);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-}
-
-.win-button:hover {
-  background: rgba(5, 150, 105, 0.95);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
 }
 
 /* Confetti Canvas - Fully transparent background */
@@ -1285,84 +1263,6 @@
 
   .stat {
     flex: 1 1 45%;
-  }
-}
-
-/* Bot Character Animation - appears next to success modal */
-.bot-character {
-  position: fixed;
-  top: 50%;
-  right: calc(50% + 250px);
-  transform: translate(0, -50%);
-  z-index: 3001;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.bot-character.bot-appear {
-  animation: botSlideIn 0.6s ease-out forwards, botFloat 3s ease-in-out 0.6s infinite;
-}
-
-.bot-image {
-  width: 180px;
-  height: auto;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-}
-
-@keyframes botSlideIn {
-  0% {
-    opacity: 0;
-    transform: translate(100px, -50%) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(0, -50%) scale(1);
-  }
-}
-
-@keyframes botFloat {
-  0%, 100% {
-    transform: translate(0, -50%) translateY(0);
-  }
-  50% {
-    transform: translate(0, -50%) translateY(-15px);
-  }
-}
-
-@media (max-width: 768px) {
-  .bot-image {
-    width: 120px;
-  }
-
-  .bot-character {
-    top: auto;
-    bottom: 60%;
-    right: 10px;
-    transform: translate(0, 0);
-  }
-
-  .bot-character.bot-appear {
-    animation: botSlideInMobile 0.6s ease-out forwards, botFloatMobile 3s ease-in-out 0.6s infinite;
-  }
-
-  @keyframes botSlideInMobile {
-    0% {
-      opacity: 0;
-      transform: translate(100px, 0) scale(0.8);
-    }
-    100% {
-      opacity: 1;
-      transform: translate(0, 0) scale(1);
-    }
-  }
-
-  @keyframes botFloatMobile {
-    0%, 100% {
-      transform: translate(0, 0) translateY(0);
-    }
-    50% {
-      transform: translate(0, 0) translateY(-10px);
-    }
   }
 }
 

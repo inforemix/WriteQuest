@@ -4,12 +4,12 @@ import { soundManager } from '../utils/sounds';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
 import SettingsMenu from './SettingsMenu';
-import VideoModal from './VideoModal';
+import StoryPage from './StoryPage';
 
 function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   const { t } = useLanguage();
   const [showSettings, setShowSettings] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
+  const [showStory, setShowStory] = useState(false);
 
   // Start background music on mount
   useEffect(() => {
@@ -24,7 +24,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
 
   const handleStoryClick = () => {
     soundManager.playClick();
-    setShowVideo(true);
+    setShowStory(true);
   };
 
   return (
@@ -42,7 +42,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         loop
         muted
         playsInline
-        onError={(e) => {
+        onError={() => {
           console.error('Video failed to load');
         }}
       >
@@ -88,10 +88,9 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         setIsAdmin={setIsAdmin}
       />
 
-      <VideoModal
-        isOpen={showVideo}
-        onClose={() => setShowVideo(false)}
-        videoUrl="https://youtu.be/JYpicNsur7s"
+      <StoryPage
+        isOpen={showStory}
+        onClose={() => setShowStory(false)}
       />
     </div>
   );

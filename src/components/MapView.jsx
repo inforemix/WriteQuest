@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import UploadModal from './UploadModal';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
-import { getPronunciation } from '../utils/cantoneseAudio';
 import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate, onModeChange }) {
