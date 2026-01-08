@@ -228,9 +228,9 @@
     padding-right: 0;
   }
 
-  /* Right column - even items (2nd, 4th, 6th, ...) offset lower for zig-zag */
+  /* Right column - even items (2nd, 4th, 6th, ...) */
   .stage-node:nth-child(even) {
-    margin-top: 60px;
+    margin-top: 0;
     margin-bottom: 0;
     justify-self: center;
     padding-left: 0;
@@ -609,7 +609,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-basis: auto;
+    flex: 0 0 auto;
     order: 3;
   }
 
@@ -621,7 +621,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-basis: auto;
+    flex: 0 0 auto;
     order: 3;
   }
 
@@ -732,7 +732,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-basis: auto;
+    flex: 0 0 auto;
     order: 3;
   }
 
@@ -749,7 +749,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-basis: auto;
+    flex: 0 0 auto;
     order: 3;
   }
 
@@ -796,7 +796,7 @@
   }
 
   .stage-node:nth-child(even) {
-    margin-top: 60px;
+    margin-top: 0;
     padding-left: 0;
   }
 
