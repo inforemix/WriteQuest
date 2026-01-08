@@ -214,7 +214,7 @@
     padding: 40px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: 20px;
     align-items: start;
     justify-items: center;
   }
@@ -224,7 +224,7 @@
     margin-top: 0;
     margin-bottom: 0;
     justify-self: end;
-    padding-right: 20px;
+    padding-right: 10px;
   }
 
   /* Right column - even items (2nd, 4th, 6th, ...) */
@@ -232,7 +232,7 @@
     margin-top: 80px;
     margin-bottom: 0;
     justify-self: start;
-    padding-left: 20px;
+    padding-left: 10px;
   }
 }
 
@@ -251,7 +251,7 @@
 .path-line {
   fill: none;
   stroke: #1a5490;
-  stroke-width: 10;
+  stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 15, 10;
@@ -595,7 +595,12 @@
   .back-button {
     position: static;
     order: 2;
-    padding: 8px 12px;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .header-right-controls {
@@ -695,12 +700,17 @@
   .back-button {
     position: static;
     order: 2;
-    padding: 8px 12px;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .back-icon {
-    height: 32px;
-    width: 32px;
+    height: 28px;
+    width: 28px;
   }
 
   .header-right-controls {
