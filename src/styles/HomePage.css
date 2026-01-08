@@ -146,6 +146,13 @@
   pointer-events: none;
 }
 
+/* Hide video overlay on tablet and mobile */
+@media (max-width: 1024px) {
+  .homepage-video-overlay {
+    display: none;
+  }
+}
+
 /* Desktop */
 @media (min-width: 1024px) {
   .home-content {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '../styles/HomePage.css';
 import { soundManager } from '../utils/sounds';
 import { getAssetPath } from '../utils/assets';

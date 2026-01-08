@@ -443,7 +443,7 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
       <div className="map-container">
         {/* SVG Path Lines */}
         {filteredStages.length > 1 && (
-          <svg className="map-path-svg" xmlns="http://www.w3.org/2000/svg">
+          <svg className="map-path-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
               <filter id="path-shadow">
                 <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2"/>
@@ -454,18 +454,18 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              const baseX = 60; // Starting X position
-              const spacing = (80 + 120); // gap + circle width
+              const baseX = 6; // Starting X position (percentage in 0-100 scale)
+              const spacing = (8 + 12); // gap + circle width (percentage units)
               const zigzagAmplitude = 15; // Percentage for up/down movement
 
               // Current stage position
               const isEven = index % 2 === 0;
-              const currentY = isEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const currentY = isEven ? (50 + zigzagAmplitude) : (50 - zigzagAmplitude);
               const currentX = baseX + (index * spacing);
 
               // Next stage position
               const isNextEven = (index + 1) % 2 === 0;
-              const nextY = isNextEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const nextY = isNextEven ? (50 + zigzagAmplitude) : (50 - zigzagAmplitude);
               const nextX = baseX + ((index + 1) * spacing);
 
               // Control point for curved line
@@ -475,48 +475,44 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
                 <path
                   key={`path-${index}`}
                   className="path-line desktop-path"
-                  d={`M ${currentX} ${currentY}% Q ${midX} ${(currentY + nextY) / 2}% ${nextX} ${nextY}%`}
+                  d={`M ${currentX} ${currentY} Q ${midX} ${(currentY + nextY) / 2} ${nextX} ${nextY}`}
                   filter="url(#path-shadow)"
                 />
               );
             })}
 
-            {/* Mobile: Continuous background path */}
-            <path
-              className="path-background mobile-path"
-              d={(() => {
-                if (filteredStages.length < 2) return '';
-
-                let pathData = '';
-                filteredStages.forEach((stage, index) => {
-                  const y = index * 160 + 80;
-
-                  if (index === 0) {
-                    pathData = `M 50% ${y}px`;
-                  } else {
-                    pathData += ` L 50% ${y}px`;
-                  }
-                });
-                return pathData;
-              })()}
-              filter="url(#path-shadow)"
-            />
-
-            {/* Mobile: Individual vertical line segments */}
+            {/* Mobile: 2-column zig-zag paths */}
             {filteredStages.map((stage, index) => {
               if (index === filteredStages.length - 1) return null;
 
-              const startY = index * 160 + 80;
-              const endY = (index + 1) * 160 + 80;
+              // For 2-column layout on mobile
+              const isCurrentOdd = index % 2 === 0; // 0-indexed, so 0 is odd (left)
+              const isNextOdd = (index + 1) % 2 === 0;
+
+              // Calculate positions based on 2-column grid (in viewBox coordinate system 0-100)
+              // Left column (odd indices): ~25% from left
+              // Right column (even indices): ~75% from left
+              const currentX = isCurrentOdd ? 25 : 75;
+              const nextX = isNextOdd ? 25 : 75;
+
+              // Vertical positioning based on row
+              // Each stage is roughly 100/20 = 5% height (for 20 stages max)
+              // Adjust based on actual number of rows
+              const rowHeight = 100 / Math.ceil(filteredStages.length / 2);
+              const currentRow = Math.floor(index / 2);
+              const nextRow = Math.floor((index + 1) / 2);
+              const currentY = (currentRow * rowHeight) + (rowHeight / 2);
+              const nextY = (nextRow * rowHeight) + (rowHeight / 2);
+
+              // Middle point for curve
+              const midX = 50;
+              const midY = (currentY + nextY) / 2;
 
               return (
-                <line
+                <path
                   key={`mobile-path-${index}`}
                   className="path-line mobile-path"
-                  x1="50%"
-                  y1={`${startY}px`}
-                  x2="50%"
-                  y2={`${endY}px`}
+                  d={`M ${currentX} ${currentY} Q ${midX} ${midY} ${nextX} ${nextY}`}
                   filter="url(#path-shadow)"
                 />
               );
