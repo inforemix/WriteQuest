@@ -460,12 +460,12 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
               // Current stage position
               const isEven = index % 2 === 0;
-              const currentY = isEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const currentY = isEven ? (50 + zigzagAmplitude) : (50 - zigzagAmplitude);
               const currentX = baseX + (index * spacing);
 
               // Next stage position
               const isNextEven = (index + 1) % 2 === 0;
-              const nextY = isNextEven ? (50 - zigzagAmplitude) : (50 + zigzagAmplitude);
+              const nextY = isNextEven ? (50 + zigzagAmplitude) : (50 - zigzagAmplitude);
               const nextX = baseX + ((index + 1) * spacing);
 
               // Control point for curved line

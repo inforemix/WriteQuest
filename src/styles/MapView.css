@@ -222,7 +222,7 @@
 
   /* Left column - odd items (1st, 3rd, 5th, ...) offset higher */
   .stage-node:nth-child(odd) {
-    margin-top: 100px;
+    margin-top: 150px;
     margin-bottom: 0;
     justify-self: center;
     padding-right: 0;
@@ -573,32 +573,34 @@
     padding: 12px 16px;
     margin-bottom: 20px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 12px;
     border-radius: 0;
     border: none;
     outline: none;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .mode-title {
     font-size: 1.2rem;
     position: static;
-    width: 100%;
+    width: auto;
     text-align: center;
-    flex-basis: 100%;
-    order: 1;
+    flex-basis: auto;
+    order: unset;
+    display: none;
   }
 
   .progress-unified {
     max-width: 100%;
     gap: 12px;
-    padding: 12px 0;
+    padding: 0;
     margin: 0 !important;
-    width: 100%;
-    flex-basis: 100%;
-    order: 2;
+    width: auto;
+    flex-basis: auto;
+    order: unset;
+    flex: 1;
   }
 
   .back-button {
@@ -610,7 +612,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    order: 3;
+    order: unset;
   }
 
   .header-right-controls {
@@ -622,7 +624,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    order: 3;
+    order: unset;
   }
 
   .mode-toggle-button {
@@ -697,31 +699,33 @@
     padding: 12px;
     margin-bottom: 20px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 12px;
     border-radius: 0;
     border: none;
     outline: none;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .mode-title {
     font-size: 1.1rem;
-    width: 100%;
+    width: auto;
     text-align: center;
-    flex-basis: 100%;
-    order: 1;
+    flex-basis: auto;
+    order: unset;
+    display: none;
   }
 
   .progress-unified {
     max-width: 100%;
     gap: 12px;
-    padding: 12px 0;
+    padding: 0;
     margin: 0 !important;
-    width: 100%;
-    flex-basis: 100%;
-    order: 2;
+    width: auto;
+    flex-basis: auto;
+    order: unset;
+    flex: 1;
   }
 
   .back-button {
@@ -733,7 +737,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    order: 3;
+    order: unset;
   }
 
   .back-icon {
@@ -750,7 +754,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    order: 3;
+    order: unset;
   }
 
   .mode-toggle-button {
@@ -792,7 +796,7 @@
 
   .stage-node:nth-child(odd) {
     padding-right: 0;
-    margin-top: 100px;
+    margin-top: 150px;
   }
 
   .stage-node:nth-child(even) {
