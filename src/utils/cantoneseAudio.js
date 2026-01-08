@@ -11,6 +11,8 @@
  * 3. Cache audio data for offline use
  */
 
+import { getAssetPath } from './assets';
+
 /**
  * Cantonese pronunciation mapping for characters
  * Based on Jyutping romanization system
@@ -85,7 +87,7 @@ export function playCantonesePronunciation(character, onError) {
   }
 
   // Try to load from local audio files first
-  const audioPath = `/audio/${pronunciation.filename}`;
+  const audioPath = getAssetPath(`audio/${pronunciation.filename}`);
   const audio = new Audio(audioPath);
 
   audio.onerror = () => {
@@ -117,7 +119,7 @@ export function preloadAudio(characters) {
   characters.forEach(char => {
     const pronunciation = getPronunciation(char);
     if (pronunciation) {
-      const audio = new Audio(`/audio/${pronunciation.filename}`);
+      const audio = new Audio(getAssetPath(`audio/${pronunciation.filename}`));
       audio.preload = 'auto';
       audio.load();
     }

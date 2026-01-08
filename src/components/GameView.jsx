@@ -1000,20 +1000,23 @@ function GameView({ stage, onComplete, allStages }) {
             />
           </div>
 
-          <div className="win-modal">
-            <div className="win-title">{t('puzzleComplete')}</div>
-            <div className="win-stats">
-              <div className="win-stat">
-                <div className="win-stat-value">{formatTime(time)}</div>
-                <div className="win-stat-label">{t('timeRemaining')}</div>
+          <div className="win-overlay">
+            <div className="win-modal">
+              <div className="win-emoji">🎉</div>
+              <div className="win-title">{t('puzzleComplete')}</div>
+              <div className="win-stats">
+                <div className="win-stat">
+                  <div className="win-stat-value">{formatTime(time)}</div>
+                  <div className="win-stat-label">{t('timeRemaining')}</div>
+                </div>
+                <div className="win-stat">
+                  <div className="win-stat-value">{moves}</div>
+                  <div className="win-stat-label">{t('moves')}</div>
+                </div>
               </div>
-              <div className="win-stat">
-                <div className="win-stat-value">{moves}</div>
-                <div className="win-stat-label">{t('moves')}</div>
-              </div>
+              {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
+              <button className="win-button" onClick={onComplete}>{t('continue')}</button>
             </div>
-            {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
-            <button className="win-button" onClick={onComplete}>{t('continue')}</button>
           </div>
         </>
       )}
