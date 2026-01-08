@@ -222,7 +222,7 @@
 
   /* Left column - odd items (1st, 3rd, 5th, ...) offset higher */
   .stage-node:nth-child(odd) {
-    margin-top: 150px;
+    margin-top: 100px;
     margin-bottom: 0;
     justify-self: center;
     padding-right: 0;
@@ -700,7 +700,7 @@
     margin-bottom: 20px;
     display: flex;
     flex-wrap: nowrap;
-    gap: 12px;
+    gap: 8px;
     border-radius: 0;
     border: none;
     outline: none;
@@ -719,13 +719,27 @@
 
   .progress-unified {
     max-width: 100%;
-    gap: 12px;
+    gap: 8px;
     padding: 0;
     margin: 0 !important;
     width: auto;
     flex-basis: auto;
     order: unset;
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .progress-circle svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+  }
+
+  .progress-numbers {
+    font-size: 0.75rem;
   }
 
   .back-button {
@@ -736,18 +750,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 auto;
+    flex: 0 0 36px;
     order: unset;
   }
 
   .back-icon {
-    height: 28px;
-    width: 28px;
+    height: 24px;
+    width: 24px;
   }
 
   .header-right-controls {
     position: static !important;
-    gap: 8px;
+    gap: 6px;
     margin-left: 0;
     margin-right: 0;
     display: flex;
@@ -768,14 +782,8 @@
   }
 
   .music-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-
-  .progress-circle svg {
-    width: 45px;
-    height: 45px;
+    width: 16px;
+    height: 16px;
   }
 
   .progress-label {
@@ -796,7 +804,7 @@
 
   .stage-node:nth-child(odd) {
     padding-right: 0;
-    margin-top: 150px;
+    margin-top: 100px;
   }
 
   .stage-node:nth-child(even) {
