@@ -205,17 +205,34 @@
   }
 }
 
-/* Mobile: Single column */
+/* Mobile: 2-column zig-zag layout */
 @media (max-width: 768px) {
   .map-container {
     position: relative;
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    justify-items: center;
+  }
+
+  /* Left column - odd items (1st, 3rd, 5th, ...) */
+  .stage-node:nth-child(odd) {
+    margin-top: 0;
+    margin-bottom: 0;
+    justify-self: end;
+    padding-right: 20px;
+  }
+
+  /* Right column - even items (2nd, 4th, 6th, ...) */
+  .stage-node:nth-child(even) {
+    margin-top: 80px;
+    margin-bottom: 0;
+    justify-self: start;
+    padding-left: 20px;
   }
 }
 
@@ -262,6 +279,15 @@
 @media (max-width: 768px) {
   .desktop-path {
     display: none;
+  }
+
+  /* Update SVG for 2-column mobile layout */
+  .map-path-svg {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
 }
 
@@ -553,31 +579,73 @@
     border-radius: 0;
     border: none;
     outline: none;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .mode-title {
     font-size: 1.2rem;
     position: static;
-    order: -1;
+    order: 1;
     width: 100%;
     text-align: center;
+    margin-bottom: 8px;
   }
 
   .back-button {
     position: static;
-    order: -2;
+    order: 2;
+    padding: 8px 12px;
+  }
+
+  .header-right-controls {
+    position: static !important;
+    order: 3;
+    gap: 10px;
+    margin-left: auto;
   }
 
   .mode-toggle-button {
     position: static;
     order: 0;
+    height: 44px;
+  }
+
+  .music-toggle-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .music-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .progress-unified {
+    max-width: 100%;
+    gap: 12px;
+    padding: 10px 16px;
+    margin: 0;
+    order: 4;
+    width: 100%;
+  }
+
+  .progress-circle svg {
+    width: 50px;
     height: 50px;
+  }
+
+  .progress-label {
+    font-size: 0.9rem;
+  }
+
+  .progress-numbers {
+    font-size: 0.9rem;
   }
 
   .map-container {
     padding: 30px 15px;
-    gap: 60px;
+    gap: 40px;
   }
 
   .stage-circle {
@@ -597,26 +665,6 @@
     font-size: 17px;
     border-width: 3px;
   }
-
-  .progress-unified {
-    max-width: 100%;
-    gap: 12px;
-    padding: 10px 16px;
-    margin-right: 30px;
-  }
-
-  .progress-circle svg {
-    width: 50px;
-    height: 50px;
-  }
-
-  .progress-label {
-    font-size: 0.9rem;
-  }
-
-  .progress-numbers {
-    font-size: 0.9rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -630,76 +678,110 @@
     border: none;
     outline: none;
     gap: 8px;
-    padding: 16px 12px;
-    min-height: 90px;
-    justify-content: flex-start;
+    padding: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
     position: relative;
   }
 
-  .progress-unified {
-    margin-right: 0;
-    margin-left: 0;
-    gap: 8px;
-    padding: 8px 12px;
-    max-width: 200px;
-    position: relative;
-    left: 0;
+  .mode-title {
+    font-size: 1.1rem;
+    order: 1;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 4px;
   }
 
-  .mode-toggle-button {
-    margin-left: auto;
-  }
-
-  /* Move back button outside header, to its own row below */
   .back-button {
-    position: absolute;
-    left: 15px;
-    top: 105px;
-    z-index: 100;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    pointer-events: auto;
+    position: static;
+    order: 2;
+    padding: 8px 12px;
   }
 
   .back-icon {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
   }
 
-  .map-container {
-    gap: 50px;
-    padding: 20px 10px;
-    padding-top: 60px;
-  }
-
-  .stage-circle {
-    width: 100px;
-    height: 100px;
-    border-width: 5px;
-  }
-
-  .stage-label {
-    font-size: 1rem;
-  }
-
-  .completed-checkmark {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+  .header-right-controls {
+    position: static !important;
+    order: 3;
+    gap: 8px;
+    margin-left: auto;
   }
 
   .mode-toggle-button {
-    height: 42px;
+    height: 40px;
+  }
+
+  .music-toggle-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .music-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .progress-unified {
+    margin: 0;
+    gap: 8px;
+    padding: 8px 12px;
+    max-width: 100%;
+    order: 4;
+    width: 100%;
+  }
+
+  .progress-circle svg {
+    width: 45px;
+    height: 45px;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+  }
+
+  .progress-numbers {
+    font-size: 0.8rem;
+  }
+
+  .map-container {
+    gap: 35px;
+    padding: 20px 10px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stage-node:nth-child(odd) {
+    padding-right: 15px;
+  }
+
+  .stage-node:nth-child(even) {
+    margin-top: 70px;
+    padding-left: 15px;
+  }
+
+  .stage-circle {
+    width: 90px;
+    height: 90px;
+    border-width: 4px;
+  }
+
+  .stage-label {
+    font-size: 0.9rem;
+  }
+
+  .completed-checkmark {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
   }
 
   .floating-add-button {
     bottom: 20px;
     right: 20px;
-    padding: 14px 24px;
-    font-size: 0.9rem;
+    padding: 12px 20px;
+    font-size: 0.85rem;
   }
 }
 
