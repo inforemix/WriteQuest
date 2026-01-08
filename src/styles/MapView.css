@@ -220,21 +220,17 @@
     row-gap: 40px;
   }
 
-  /* Add gap between items - items 3, 4, 5, 6... (all items from 3rd onwards) */
-  .stage-node:nth-child(n+3) {
-    margin-top: 50px;
-    margin-bottom: 0;
-  }
-
-  /* Left column - odd items (1st, 3rd, 5th, ...) */
+  /* Left column - odd items (1st, 3rd, 5th, ...) - no offset */
   .stage-node:nth-child(odd) {
+    margin-top: 0;
     margin-bottom: 0;
     justify-self: center;
     padding-right: 0;
   }
 
-  /* Right column - even items (2nd, 4th, 6th, ...) */
+  /* Right column - even items (2nd, 4th, 6th, ...) - offset lower for zig-zag */
   .stage-node:nth-child(even) {
+    margin-top: 80px;
     margin-bottom: 0;
     justify-self: center;
     padding-left: 0;
@@ -709,7 +705,7 @@
     border: none;
     outline: none;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .mode-title {
@@ -719,46 +715,6 @@
     flex-basis: auto;
     order: unset;
     display: none;
-  }
-
-  .progress-unified {
-    max-width: 100%;
-    gap: 4px;
-    padding: 0;
-    margin: 0 !important;
-    width: auto;
-    flex-basis: auto;
-    order: unset;
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .progress-circle {
-    flex-shrink: 0;
-  }
-
-  .progress-circle svg {
-    width: 32px;
-    height: 32px;
-  }
-
-  .progress-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-  }
-
-  .progress-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0px;
-  }
-
-  .progress-numbers {
-    font-size: 0.65rem;
-    font-weight: 700;
   }
 
   .back-button {
@@ -778,6 +734,61 @@
     width: 20px;
   }
 
+  .music-toggle-button {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+  .music-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .progress-unified {
+    max-width: 100%;
+    gap: 4px;
+    padding: 0;
+    margin: 0 auto !important;
+    width: auto;
+    flex-basis: auto;
+    order: unset;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .progress-circle {
+    flex-shrink: 0;
+  }
+
+  .progress-circle svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .progress-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .progress-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    white-space: nowrap;
+  }
+
+  .progress-numbers {
+    font-size: 0.65rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
   .header-right-controls {
     position: static !important;
     gap: 4px;
@@ -793,37 +804,29 @@
   .mode-toggle-button {
     height: 32px;
     width: auto;
-  }
-
-  .music-toggle-button {
-    width: 32px;
-    height: 32px;
-  }
-
-  .music-icon {
-    width: 14px;
-    height: 14px;
+    flex: 0 0 auto;
   }
 
   .map-container {
-    max-width: 280px;
+    max-width: 320px;
+    margin: 0 auto;
     gap: 30px 10px;
     padding: 20px 10px;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     row-gap: 40px;
   }
 
-  /* Add gap between items in same column - items 3, 5, 7... (odd) and 4, 6, 8... (even), but not first row */
-  .stage-node:nth-child(n+3) {
-    margin-top: 50px;
-  }
-
+  /* Left column - odd items (1st, 3rd, 5th, ...) - no offset */
   .stage-node:nth-child(odd) {
     padding-right: 0;
+    margin-top: 0;
   }
 
+  /* Right column - even items (2nd, 4th, 6th, ...) - offset lower for zig-zag */
   .stage-node:nth-child(even) {
     padding-left: 0;
+    margin-top: 80px;
   }
 
   .stage-circle {
