@@ -228,9 +228,9 @@
     padding-right: 0;
   }
 
-  /* Right column - even items (2nd, 4th, 6th, ...) - offset lower for zig-zag */
+  /* Right column - even items (2nd, 4th, 6th, ...) - offset higher for zig-zag */
   .stage-node:nth-child(even) {
-    margin-top: 80px;
+    margin-top: -180px;
     margin-bottom: 0;
     justify-self: center;
     padding-left: 0;
@@ -592,17 +592,6 @@
     display: none;
   }
 
-  .progress-unified {
-    max-width: 100%;
-    gap: 12px;
-    padding: 0;
-    margin: 0 !important;
-    width: auto;
-    flex-basis: auto;
-    order: unset;
-    flex: 1;
-  }
-
   .back-button {
     position: static;
     padding: 0;
@@ -611,8 +600,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 auto;
-    order: unset;
+    flex-shrink: 0;
+  }
+
+  .progress-unified {
+    flex: 1;
+    min-width: 120px;
+    max-width: 200px;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .progress-circle svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+  }
+
+  .progress-numbers {
+    font-size: 0.75rem;
   }
 
   .header-right-controls {
@@ -623,8 +637,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 auto;
-    order: unset;
+    flex-shrink: 0;
   }
 
   .mode-toggle-button {
@@ -700,12 +713,12 @@
     margin-bottom: 20px;
     display: flex;
     flex-wrap: nowrap;
-    gap: 6px;
+    gap: 8px;
     border-radius: 0;
     border: none;
     outline: none;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
   }
 
   .mode-title {
@@ -725,8 +738,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 32px;
-    order: unset;
+    flex-shrink: 0;
   }
 
   .back-icon {
@@ -735,9 +747,12 @@
   }
 
   .music-toggle-button {
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .music-icon {
@@ -746,14 +761,13 @@
   }
 
   .progress-unified {
-    max-width: 100%;
-    gap: 4px;
-    padding: 0;
-    margin: 0 auto !important;
-    width: auto;
-    flex-basis: auto;
-    order: unset;
     flex: 1;
+    min-width: 100px;
+    max-width: 160px;
+    gap: 3px;
+    padding: 0;
+    margin: 0;
+    width: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -764,8 +778,8 @@
   }
 
   .progress-circle svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   .progress-info {
@@ -773,38 +787,43 @@
     flex-direction: column;
     align-items: center;
     gap: 0;
+    min-width: 0;
   }
 
   .progress-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .progress-numbers {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header-right-controls {
-    position: static !important;
-    gap: 4px;
+    position: static;
+    gap: 6px;
     margin-left: 0;
     margin-right: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 auto;
-    order: unset;
+    flex-shrink: 0;
   }
 
   .mode-toggle-button {
-    height: 32px;
+    height: 28px;
     width: auto;
-    flex: 0 0 auto;
+    flex-shrink: 0;
+    max-width: 50px;
   }
 
   .map-container {
@@ -823,10 +842,10 @@
     margin-top: 0;
   }
 
-  /* Right column - even items (2nd, 4th, 6th, ...) - offset lower for zig-zag */
+  /* Right column - even items (2nd, 4th, 6th, ...) - offset higher for zig-zag */
   .stage-node:nth-child(even) {
     padding-left: 0;
-    margin-top: 80px;
+    margin-top: -180px;
   }
 
   .stage-circle {
