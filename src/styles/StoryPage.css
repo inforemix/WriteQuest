@@ -1,0 +1,251 @@
+/* Story Page - Full screen story view */
+.story-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FDF5E6;
+  z-index: 10000;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Back Button */
+.story-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.story-back-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: brightness(1.15);
+}
+
+.story-back-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.story-back-icon {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Video Container - 90% Width */
+.story-video-container {
+  width: 90%;
+  max-width: 90%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+  background: #000;
+}
+
+.story-video-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Main Section with Mascots */
+.story-main-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 30px;
+}
+
+/* Mascots */
+.story-mascot {
+  width: 140px;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  animation: float 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.story-mascot-left {
+  animation-delay: 0s;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.story-mascot-right {
+  animation-delay: 1.5s;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Center Content */
+.story-center-content {
+  flex: 1;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Story Text */
+.story-text {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4a4a4a;
+  text-align: justify;
+  margin-bottom: 25px;
+  padding: 0 10px;
+}
+
+/* Sign Up Button */
+.story-signup-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.story-signup-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  filter: brightness(1.1);
+}
+
+.story-signup-btn:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.signup-btn-image {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Bottom Illustration */
+.story-bottom-illustration {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: auto;
+}
+
+.story-bottom-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px 20px 0 0;
+  filter: drop-shadow(0 -4px 20px rgba(0, 0, 0, 0.1));
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .story-content {
+    padding: 15px;
+  }
+
+  .story-back-icon {
+    height: 40px;
+  }
+
+  .story-video-container {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .story-main-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .story-mascot {
+    width: 80px;
+  }
+
+  .story-mascot-left,
+  .story-mascot-right {
+    position: absolute;
+  }
+
+  .story-main-section {
+    position: relative;
+    padding-top: 10px;
+  }
+
+  .story-mascot-left {
+    left: 10px;
+    top: 0;
+  }
+
+  .story-mascot-right {
+    right: 10px;
+    top: 0;
+  }
+
+  .story-center-content {
+    max-width: 100%;
+    padding-top: 50px;
+  }
+
+  .story-text {
+    font-size: 0.95rem;
+    padding: 0 5px;
+  }
+
+  .signup-btn-image {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .story-back-icon {
+    height: 35px;
+  }
+
+  .story-mascot {
+    width: 60px;
+  }
+
+  .story-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .signup-btn-image {
+    max-width: 180px;
+  }
+}

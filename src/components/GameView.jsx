@@ -21,7 +21,6 @@ function GameView({ stage, onComplete, allStages }) {
   const [timeExpired, setTimeExpired] = useState(false);
   const [justDropped, setJustDropped] = useState(false);
   const [hintCount, setHintCount] = useState(0);
-  const [touchDragTarget, setTouchDragTarget] = useState(null);
   const [isLastEasyPuzzle, setIsLastEasyPuzzle] = useState(false);
   const [isLastHardPuzzle, setIsLastHardPuzzle] = useState(false);
   const timerRef = useRef();
@@ -367,7 +366,7 @@ function GameView({ stage, onComplete, allStages }) {
   };
 
   // Touch event handlers for mobile support
-  const handleTouchStart = (e, index, visualIndex) => {
+  const handleTouchStart = (e) => {
     if (!isDraggable) return;
 
     const touch = e.touches[0];
@@ -393,14 +392,12 @@ function GameView({ stage, onComplete, allStages }) {
       if (draggedPiece === null) {
         const target = e.target;
         if (target.classList.contains('puzzle-piece')) {
-          const index = parseInt(target.dataset.currentIndex);
-          const visualIndex = Array.from(target.parentElement.children).indexOf(target);
-          setDraggedPiece(index);
-          setDraggedFromIndex(visualIndex);
+          const pieceIndex = parseInt(target.dataset.currentIndex);
+          const pieceVisualIndex = Array.from(target.parentElement.children).indexOf(target);
+          setDraggedPiece(pieceIndex);
+          setDraggedFromIndex(pieceVisualIndex);
         }
       }
-
-      setTouchDragTarget({ x: touch.clientX, y: touch.clientY });
     }
   };
 
@@ -432,7 +429,6 @@ function GameView({ stage, onComplete, allStages }) {
     // Reset drag state
     setDraggedPiece(null);
     setDraggedFromIndex(null);
-    setTouchDragTarget(null);
 
     setJustDropped(true);
     if (dropTimeoutRef.current) {
@@ -896,8 +892,9 @@ function GameView({ stage, onComplete, allStages }) {
                   ${isWon ? 'puzzle-complete' : ''}`}
                 style={{
                   backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
-                  transform: isBeingDragged ? 'scale(1.15)' : `rotate(${piece.displayRotation}deg)`,
-                  transition: isBeingDragged ? 'none' : undefined,
+                  transform: isBeingDragged
+                    ? `scale(1.15) rotate(${piece.displayRotation}deg)`
+                    : `rotate(${piece.displayRotation}deg)`,
                   cursor: isWon ? 'default' : undefined,
                   pointerEvents: isWon ? 'none' : 'auto'
                 }}
@@ -908,7 +905,7 @@ function GameView({ stage, onComplete, allStages }) {
                 onDragOver={!isWon ? handleDragOver : undefined}
                 onDrop={() => !isWon && handleDrop(piece.currentIndex)}
                 onDragEnd={!isWon ? handleDragEnd : undefined}
-                onTouchStart={(e) => !isWon && handleTouchStart(e, piece.currentIndex, index)}
+                onTouchStart={(e) => !isWon && handleTouchStart(e)}
                 onTouchMove={!isWon ? handleTouchMove : undefined}
                 onTouchEnd={!isWon ? handleTouchEnd : undefined}
               />
@@ -939,6 +936,28 @@ function GameView({ stage, onComplete, allStages }) {
               </button>
             </div>
           )}
+
+          {/* Inline completion info - shown below pinyin when puzzle is complete */}
+          {isWon && (
+            <div className="completion-info">
+              <div className="completion-stats">
+                <div className="completion-stat">
+                  <span className="completion-stat-icon">⏱️</span>
+                  <span className="completion-stat-value">{formatTime(time)}</span>
+                  <span className="completion-stat-label">{t('timeRemaining')}</span>
+                </div>
+                <div className="completion-stat">
+                  <span className="completion-stat-icon">🎯</span>
+                  <span className="completion-stat-value">{moves}</span>
+                  <span className="completion-stat-label">{t('moves')}</span>
+                </div>
+              </div>
+              {isNewPB && <div className="completion-pb">🏆 {t('newPersonalBest')}</div>}
+              <button className="completion-continue-btn" onClick={onComplete}>
+                {t('continue')}
+              </button>
+            </div>
+          )}
         </div>
 
         {showHint && (
@@ -951,74 +970,41 @@ function GameView({ stage, onComplete, allStages }) {
         )}
       </div>
 
-      {isWon && (
-        <>
-          {/* Win celebration video for last easy mode puzzle */}
-          {stage.mode === 'easy' && isLastEasyPuzzle && (
-            <video
-              className="win-celebration-video"
-              autoPlay
-              muted={false}
-              playsInline
-              onEnded={(e) => {
-                e.target.style.display = 'none';
-              }}
-              onError={(e) => {
-                console.error('Win video failed to load');
-                e.target.style.display = 'none';
-              }}
-            >
-              <source src={getAssetPath('UI/Win-Easy.mp4')} type="video/mp4" />
-            </video>
-          )}
+      {/* Win celebration videos for last puzzles */}
+      {isWon && stage.mode === 'easy' && isLastEasyPuzzle && (
+        <video
+          className="win-celebration-video"
+          autoPlay
+          muted={false}
+          playsInline
+          onEnded={(e) => {
+            e.target.style.display = 'none';
+          }}
+          onError={(e) => {
+            console.error('Win video failed to load');
+            e.target.style.display = 'none';
+          }}
+        >
+          <source src={getAssetPath('UI/Win-Easy.mp4')} type="video/mp4" />
+        </video>
+      )}
 
-          {/* Win celebration video for last hard mode puzzle */}
-          {stage.mode === 'hard' && isLastHardPuzzle && (
-            <video
-              className="win-celebration-video"
-              autoPlay
-              muted={false}
-              playsInline
-              onEnded={(e) => {
-                e.target.style.display = 'none';
-              }}
-              onError={(e) => {
-                console.error('Win Hard video failed to load');
-                e.target.style.display = 'none';
-              }}
-            >
-              <source src={getAssetPath('UI/Win-Hard.mp4')} type="video/mp4" />
-            </video>
-          )}
-
-          {/* Bot character next to success popup */}
-          <div className="bot-character bot-appear">
-            <img
-              src={getAssetPath('UI/bot.png')}
-              alt="Bot Character"
-              className="bot-image"
-            />
-          </div>
-
-          <div className="win-overlay">
-            <div className="win-modal">
-              <div className="win-emoji">🎉</div>
-              <div className="win-title">{t('puzzleComplete')}</div>
-              <div className="win-stats">
-                <div className="win-stat">
-                  <div className="win-stat-value">{formatTime(time)}</div>
-                  <div className="win-stat-label">{t('timeRemaining')}</div>
-                </div>
-                <div className="win-stat">
-                  <div className="win-stat-value">{moves}</div>
-                  <div className="win-stat-label">{t('moves')}</div>
-                </div>
-              </div>
-              {isNewPB && <div className="pb-indicator">🏆 {t('newPersonalBest')}</div>}
-              <button className="win-button" onClick={onComplete}>{t('continue')}</button>
-            </div>
-          </div>
-        </>
+      {isWon && stage.mode === 'hard' && isLastHardPuzzle && (
+        <video
+          className="win-celebration-video"
+          autoPlay
+          muted={false}
+          playsInline
+          onEnded={(e) => {
+            e.target.style.display = 'none';
+          }}
+          onError={(e) => {
+            console.error('Win Hard video failed to load');
+            e.target.style.display = 'none';
+          }}
+        >
+          <source src={getAssetPath('UI/Win-Hard.mp4')} type="video/mp4" />
+        </video>
       )}
 
       {timeExpired && !moveLimitExceeded && (
@@ -1050,7 +1036,7 @@ function GameView({ stage, onComplete, allStages }) {
               />
             </div>
             <div className="move-limit-title">Move Limit Reached!</div>
-            <p className="move-limit-text">You've used all {moveLimit} moves. Try again!</p>
+            <p className="move-limit-text">You&apos;ve used all {moveLimit} moves. Try again!</p>
             <div className="move-limit-actions">
               <button className="move-limit-restart-button" onClick={handleRestartPuzzle}>
                 🔄 {t('restartPuzzle')}

@@ -1,0 +1,97 @@
+import '../styles/StoryPage.css';
+import { getAssetPath } from '../utils/assets';
+import { soundManager } from '../utils/sounds';
+
+function StoryPage({ isOpen, onClose }) {
+  if (!isOpen) return null;
+
+  const handleBackClick = () => {
+    soundManager.playClick();
+    onClose();
+  };
+
+  const handleSignUpClick = () => {
+    soundManager.playClick();
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSdO8oJ0zjNSDlo3KqzdmwiBfE7IVY5vBrQBxMkwK3w5kOCdag/viewform?usp=publish-editor', '_blank');
+  };
+
+  // Extract video ID from YouTube URL
+  const videoUrl = "https://youtu.be/JYpicNsur7s";
+  const getYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+  const videoId = getYouTubeId(videoUrl);
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+  return (
+    <div className="story-page">
+      <div className="story-content">
+        {/* Back Button */}
+        <button className="story-back-btn" onClick={handleBackClick}>
+          <img src={getAssetPath('UI/back.png')} alt="Back" className="story-back-icon" />
+        </button>
+
+        {/* YouTube Video - 90% Width */}
+        <div className="story-video-container">
+          <iframe
+            src={embedUrl}
+            title="Write Quest - Rewrite the Light | Music Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </div>
+
+        {/* Story Section */}
+        <div className="story-main-section">
+          {/* Robot Mascot - Left */}
+          <img
+            src={getAssetPath('UI/bot.png')}
+            alt="Robot Mascot"
+            className="story-mascot story-mascot-left"
+          />
+
+          <div className="story-center-content">
+            {/* Story Text */}
+            <p className="story-text">
+              Once a living paradise, the island is now buried in smog,
+              waste, and silence. Rivers clog, forests suffocate, and
+              the sky no longer remembers its glow. When all seems
+              lost, two young dragon siblings return from the
+              stars—Zhongzhong (中中) and Wenwen (文文). Armed
+              with wit, courage, and the power of puzzles, they set
+              out to heal a broken world piece by piece. In Write
+              Quest, every solved symbol restores life, and every
+              choice brings the island one step closer to rebirth.
+            </p>
+
+            {/* Sign Up Button with Image */}
+            <button className="story-signup-btn" onClick={handleSignUpClick}>
+              <img src={getAssetPath('UI/update.png')} alt="Sign up for update" className="signup-btn-image" />
+            </button>
+          </div>
+
+          {/* Wenwen Mascot - Right */}
+          <img
+            src={getAssetPath('UI/wenwen.png')}
+            alt="Wenwen"
+            className="story-mascot story-mascot-right"
+          />
+        </div>
+
+        {/* Bottom Illustration */}
+        <div className="story-bottom-illustration">
+          <img
+            src={getAssetPath('UI/islandscene.jpg')}
+            alt="Island Scene"
+            className="story-bottom-image"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default StoryPage;

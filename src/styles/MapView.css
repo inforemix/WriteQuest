@@ -61,9 +61,47 @@
   width: auto;
 }
 
-.mode-toggle-button {
+/* Header Right Controls Container */
+.header-right-controls {
   position: absolute;
   right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Music Toggle Button */
+.music-toggle-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.music-toggle-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 1);
+}
+
+.music-toggle-button:active {
+  transform: scale(0.95);
+}
+
+.music-icon {
+  width: 24px;
+  height: 24px;
+  color: #4a5568;
+}
+
+.mode-toggle-button {
   height: 60px;
   width: auto;
   cursor: pointer;

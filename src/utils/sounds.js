@@ -12,7 +12,7 @@ class SoundManager {
 
     // Background music properties
     this.musicEnabled = true;
-    this.musicVolume = 0.2;
+    this.musicVolume = 0.205;
     this.backgroundMusic = null;
     this.musicGainNode = null;
 
