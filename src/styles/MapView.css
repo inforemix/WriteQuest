@@ -214,7 +214,7 @@
     padding: 40px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 3px;
     align-items: start;
     justify-items: center;
   }
@@ -224,7 +224,7 @@
     margin-top: 0;
     margin-bottom: 0;
     justify-self: end;
-    padding-right: 10px;
+    padding-right: 1px;
   }
 
   /* Right column - even items (2nd, 4th, 6th, ...) */
@@ -232,7 +232,7 @@
     margin-top: 80px;
     margin-bottom: 0;
     justify-self: start;
-    padding-left: 10px;
+    padding-left: 1px;
   }
 }
 
@@ -251,7 +251,7 @@
 .path-line {
   fill: none;
   stroke: #1a5490;
-  stroke-width: 4;
+  stroke-width: 0.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 15, 10;
@@ -581,6 +581,7 @@
     outline: none;
     justify-content: space-between;
     align-items: center;
+    display: flex;
   }
 
   .mode-title {
@@ -608,12 +609,15 @@
     order: 3;
     gap: 10px;
     margin-left: auto;
+    display: flex;
+    align-items: center;
   }
 
   .mode-toggle-button {
     position: static;
     order: 0;
-    height: 44px;
+    height: 40px;
+    width: auto;
   }
 
   .music-toggle-button {
@@ -687,6 +691,8 @@
     flex-wrap: wrap;
     justify-content: space-between;
     position: relative;
+    display: flex;
+    align-items: center;
   }
 
   .mode-title {
@@ -718,10 +724,13 @@
     order: 3;
     gap: 8px;
     margin-left: auto;
+    display: flex;
+    align-items: center;
   }
 
   .mode-toggle-button {
-    height: 40px;
+    height: 36px;
+    width: auto;
   }
 
   .music-toggle-button {
