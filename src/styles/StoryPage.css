@@ -157,6 +157,18 @@
   width: 100%;
   max-width: 1200px;
   margin-top: auto;
+  position: relative;
+}
+
+.story-wenwen-overlay {
+  position: absolute;
+  top: -60px;
+  right: 10%;
+  width: 150px;
+  height: auto;
+  z-index: 10;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
 }
 
 .story-bottom-image {

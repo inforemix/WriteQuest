@@ -895,7 +895,6 @@ function GameView({ stage, onComplete, allStages }) {
                   transform: isBeingDragged
                     ? `scale(1.15) rotate(${piece.displayRotation}deg)`
                     : `rotate(${piece.displayRotation}deg)`,
-                  transition: isBeingDragged ? 'none' : 'transform 0.15s ease-out',
                   cursor: isWon ? 'default' : undefined,
                   pointerEvents: isWon ? 'none' : 'auto'
                 }}

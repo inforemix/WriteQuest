@@ -44,7 +44,7 @@ function StoryPage({ isOpen, onClose }) {
           ></iframe>
         </div>
 
-        {/* Logo and Story Section */}
+        {/* Story Section */}
         <div className="story-main-section">
           {/* Robot Mascot */}
           <img
@@ -72,19 +72,17 @@ function StoryPage({ isOpen, onClose }) {
               <img src={getAssetPath('UI/update.png')} alt="Sign up for update" className="signup-btn-image" />
             </button>
           </div>
+        </div>
 
-          {/* Wenwen Mascot */}
+        {/* Bottom Illustration with Wenwen on top */}
+        <div className="story-bottom-illustration">
           <img
             src={getAssetPath('UI/wenwen.png')}
             alt="Wenwen"
-            className="story-mascot story-mascot-right"
+            className="story-wenwen-overlay"
           />
-        </div>
-
-        {/* Bottom Illustration */}
-        <div className="story-bottom-illustration">
           <img
-            src={getAssetPath('UI/islandscene.png')}
+            src={getAssetPath('UI/islandscene.jpg')}
             alt="Island Scene"
             className="story-bottom-image"
           />
