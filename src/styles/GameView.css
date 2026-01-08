@@ -45,8 +45,9 @@
 
 .stat-compact {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   text-align: center;
 }
 
@@ -55,11 +56,13 @@
 }
 
 .stat-value-compact {
+  font-family: "Google Sans", sans-serif;
   font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-align: center;
 }
 
 .stat-value-compact.time-warning {
@@ -77,13 +80,14 @@
 }
 
 .stat-label-compact {
+  font-family: "Google Sans", sans-serif;
   font-size: 1rem;
   color: #ffffff;
   font-weight: 600;
   text-transform: capitalize;
   letter-spacing: 0.5px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  margin-right: 8px;
+  text-align: center;
 }
 
 .header-actions {
@@ -254,7 +258,7 @@
 }
 
 .stage-pronunciation-detail {
-  font-family: 'GROBOLD', sans-serif;
+  font-family: "Google Sans", sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffffff;
@@ -285,12 +289,15 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: #ffffff;
+  filter: grayscale(1) brightness(10);
 }
 
 .audio-button:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   background: rgba(255, 255, 255, 0.5);
+  filter: grayscale(1) brightness(10);
 }
 
 .audio-button:active {
@@ -665,39 +672,59 @@
   box-shadow: none !important;
 }
 
-/* Time Expired Modal */
-.time-expired-modal {
+/* Time Expired Modal - Glassy Design */
+.time-expired-overlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border-radius: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.time-expired-modal {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
   padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  z-index: 3000;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
   text-align: center;
   animation: scaleIn 0.3s ease-in-out;
   max-width: 400px;
   width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .time-expired-emoji {
   font-size: 4rem;
   margin-bottom: 15px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
 }
 
 .time-expired-title {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #ef4444;
-  margin-bottom: 10px;
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .time-expired-text {
+  font-family: "Google Sans", sans-serif;
   font-size: 1.1rem;
-  color: #6b7280;
-  margin-bottom: 25px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 28px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .time-expired-actions {
@@ -706,6 +733,49 @@
   gap: 12px;
 }
 
+.time-expired-restart-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.time-expired-restart-button:hover {
+  background: rgba(5, 150, 105, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.time-expired-back-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.time-expired-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Legacy restart/back buttons (keep for backwards compatibility) */
 .restart-button {
   width: 100%;
   padding: 14px;
@@ -742,14 +812,141 @@
   transform: translateY(-2px);
 }
 
-/* Tutorial Modal */
+/* Move Limit Modal - Glassy Design */
+.move-limit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.move-limit-modal {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  text-align: center;
+  animation: scaleIn 0.3s ease-in-out;
+  max-width: 400px;
+  width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.move-limit-icon-container {
+  margin-bottom: 20px;
+}
+
+.move-limit-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  animation: rotateIcon 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes rotateIcon {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.move-limit-title {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.move-limit-text {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 28px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.move-limit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.move-limit-restart-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.move-limit-restart-button:hover {
+  background: rgba(5, 150, 105, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.move-limit-back-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.move-limit-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Tutorial Modal - Glassy Design */
 .tutorial-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -759,13 +956,19 @@
 }
 
 .tutorial-modal {
-  background: white;
-  border-radius: 20px;
-  max-width: 600px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  max-width: 500px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   animation: scaleIn 0.3s ease-in-out;
 }
 
@@ -774,14 +977,36 @@
   justify-content: space-between;
   align-items: center;
   padding: 25px 30px 20px;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tutorial-title {
+  font-family: "Google Sans", sans-serif;
   font-size: 1.8rem;
-  font-weight: 900;
-  color: #111827;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 .tutorial-content {
@@ -791,6 +1016,10 @@
 .tutorial-section {
   margin-bottom: 25px;
   text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .tutorial-section:last-child {
@@ -798,30 +1027,37 @@
 }
 
 .tutorial-icon {
-  font-size: 3rem;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .tutorial-section h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #111827;
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
   margin-bottom: 8px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .tutorial-section p {
-  font-size: 1rem;
-  color: #6b7280;
-  line-height: 1.6;
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .tutorial-start-button {
+  font-family: "Google Sans", sans-serif;
   width: calc(100% - 60px);
   padding: 16px;
   margin: 0 30px 30px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(10px);
   color: white;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   font-weight: 700;
   font-size: 1.1rem;
@@ -831,6 +1067,7 @@
 }
 
 .tutorial-start-button:hover {
+  background: rgba(5, 150, 105, 0.95);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
 }

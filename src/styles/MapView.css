@@ -875,6 +875,46 @@
   100% { opacity: 0.3; }
 }
 
+/* Drone speech bubble */
+.drone-speech-bubble {
+  position: absolute;
+  top: 50%;
+  left: calc(100% - 20px);
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  color: #374151;
+  font-family: "Google Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: bubblePulse 2s ease-in-out infinite;
+}
+
+.drone-speech-bubble::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent rgba(255, 255, 255, 0.95) transparent transparent;
+}
+
+@keyframes bubblePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-50%) scale(1.02);
+  }
+}
+
 @media (max-width: 768px) {
   .drone-image {
     width: 180px;
@@ -882,5 +922,11 @@
 
   .drone-container {
     top: calc(var(--drone-top) + 50px);
+  }
+
+  .drone-speech-bubble {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    left: calc(100% - 30px);
   }
 }

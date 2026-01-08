@@ -46,7 +46,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
           console.error('Video failed to load');
         }}
       >
-        <source src={getAssetPath('UI/Web-Homepage-Aplha.mp4')} type="video/mp4" />
+        <source src={getAssetPath('UI/Web-Homepage-overlay.mp4')} type="video/mp4" />
       </video>
 
       <div className="home-content">
@@ -70,15 +70,16 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
         </div>
       </div>
 
-      <div className="version-badge">v0.4</div>
-
-      <button
-        className="settings-button"
-        onClick={() => setShowSettings(true)}
-        title={t('settings')}
-      >
-        <img src={getAssetPath('UI/setting.png')} alt={t('settings')} className="button-icon" />
-      </button>
+      <div className="bottom-right-controls">
+        <div className="version-badge">v1.1</div>
+        <button
+          className="settings-button"
+          onClick={() => setShowSettings(true)}
+          title={t('settings')}
+        >
+          <img src={getAssetPath('UI/setting.png')} alt={t('settings')} className="button-icon" />
+        </button>
+      </div>
 
       <SettingsMenu
         isOpen={showSettings}
