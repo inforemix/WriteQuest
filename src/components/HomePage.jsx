@@ -71,7 +71,7 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
       </div>
 
       <div className="bottom-right-controls">
-        <div className="version-badge">v1</div>
+        <div className="version-badge">v1.1</div>
         <button
           className="settings-button"
           onClick={() => setShowSettings(true)}

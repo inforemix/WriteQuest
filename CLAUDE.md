@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Version: 0.5.0**
+**Version: 1.1**
 
 Write Quest is a React-based Chinese character learning puzzle game featuring map-based progression with two difficulty modes:
 - **Basic Mode** (Easy: 2×2 grid): 20 fundamental Chinese characters (木 水 火 山 雨 日 土 月 人 天 大 女 田 心 男 石 光 兄 父 妹)
