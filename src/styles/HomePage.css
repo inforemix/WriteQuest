@@ -146,8 +146,8 @@
   pointer-events: none;
 }
 
-/* Hide video overlay on mobile */
-@media (max-width: 768px) {
+/* Hide video overlay on tablet and mobile */
+@media (max-width: 1024px) {
   .homepage-video-overlay {
     display: none;
   }
