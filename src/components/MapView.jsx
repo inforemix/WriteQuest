@@ -43,13 +43,17 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
 
     // Restore scroll position after returning from puzzle
     const savedScrollPos = localStorage.getItem(`mapScrollPos-${mode}`);
-    if (savedScrollPos) {
-      const mapContainer = document.querySelector('.map-container');
-      if (mapContainer) {
-        setTimeout(() => {
+    const mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      setTimeout(() => {
+        if (savedScrollPos) {
+          // Restore saved position
           mapContainer.scrollLeft = parseInt(savedScrollPos);
-        }, 100);
-      }
+        } else {
+          // First time - start at the beginning (left)
+          mapContainer.scrollLeft = 0;
+        }
+      }, 100);
     }
   }, [mode]);
 
