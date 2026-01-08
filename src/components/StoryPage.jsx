@@ -33,7 +33,7 @@ function StoryPage({ isOpen, onClose }) {
           <img src={getAssetPath('UI/back.png')} alt="Back" className="story-back-icon" />
         </button>
 
-        {/* YouTube Video - Full Width */}
+        {/* YouTube Video - 90% Width */}
         <div className="story-video-container">
           <iframe
             src={embedUrl}
@@ -67,16 +67,16 @@ function StoryPage({ isOpen, onClose }) {
               choice brings the island one step closer to rebirth.
             </p>
 
-            {/* Sign Up Button */}
+            {/* Sign Up Button with Image */}
             <button className="story-signup-btn" onClick={handleSignUpClick}>
-              Sign up for update
+              <img src={getAssetPath('UI/update.png')} alt="Sign up for update" className="signup-btn-image" />
             </button>
           </div>
 
-          {/* Dragon Mascot */}
+          {/* Wenwen Mascot */}
           <img
-            src={getAssetPath('UI/dragon.png')}
-            alt="Dragon Mascot"
+            src={getAssetPath('UI/wenwen.png')}
+            alt="Wenwen"
             className="story-mascot story-mascot-right"
           />
         </div>
@@ -84,7 +84,7 @@ function StoryPage({ isOpen, onClose }) {
         {/* Bottom Illustration */}
         <div className="story-bottom-illustration">
           <img
-            src={getAssetPath('UI/story-bottom.png')}
+            src={getAssetPath('UI/islandscene.png')}
             alt="Island Scene"
             className="story-bottom-image"
           />

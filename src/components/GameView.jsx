@@ -892,8 +892,10 @@ function GameView({ stage, onComplete, allStages }) {
                   ${isWon ? 'puzzle-complete' : ''}`}
                 style={{
                   backgroundImage: isHollowSlot ? 'none' : `url(${piece.image})`,
-                  transform: isBeingDragged ? 'scale(1.15)' : `rotate(${piece.displayRotation}deg)`,
-                  transition: isBeingDragged ? 'none' : undefined,
+                  transform: isBeingDragged
+                    ? `scale(1.15) rotate(${piece.displayRotation}deg)`
+                    : `rotate(${piece.displayRotation}deg)`,
+                  transition: isBeingDragged ? 'none' : 'transform 0.15s ease-out',
                   cursor: isWon ? 'default' : undefined,
                   pointerEvents: isWon ? 'none' : 'auto'
                 }}
