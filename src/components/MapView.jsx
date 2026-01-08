@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import UploadModal from './UploadModal';
 import { getAssetPath } from '../utils/assets';
 import { useLanguage } from '../contexts/LanguageContext';
+import { soundManager } from '../utils/sounds';
 import '../styles/MapView.css';
 
 function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, onStagesUpdate, onModeChange }) {
@@ -15,6 +16,10 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   const [droneDragOffset, setDroneDragOffset] = useState({ x: 0, y: 0 });
   const [hasBeenDragged, setHasBeenDragged] = useState(() => {
     return localStorage.getItem('droneHasBeenDragged') === 'true';
+  });
+  const [isMusicOn, setIsMusicOn] = useState(() => {
+    const saved = localStorage.getItem('musicEnabled');
+    return saved !== null ? saved === 'true' : true;
   });
 
   // Check if on mobile
@@ -79,6 +84,13 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
       localStorage.setItem(`mapScrollPos-${mode}`, mapContainer.scrollLeft.toString());
     }
     onModeChange(mode === 'easy' ? 'hard' : 'easy');
+  };
+
+  // Toggle background music
+  const handleMusicToggle = () => {
+    soundManager.playClick();
+    const newState = soundManager.toggleMusic();
+    setIsMusicOn(newState);
   };
 
   const handleAddStage = () => {
@@ -386,16 +398,33 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
             </div>
           </div>
         )}
-        <img
-          src={getAssetPath(
-            isMobile
-              ? (mode === 'easy' ? 'UI/mobile-hard.png' : 'UI/mobile-easy.png')
-              : (mode === 'easy' ? 'UI/Light Wood-hard.png' : 'UI/Light Wood-easy.png')
-          )}
-          alt={mode === 'easy' ? t('switchToHard') : t('switchToEasy')}
-          className="mode-toggle-button"
-          onClick={handleModeToggle}
-        />
+        <div className="header-right-controls">
+          <button
+            className="music-toggle-button"
+            onClick={handleMusicToggle}
+            title={isMusicOn ? 'Mute Music' : 'Play Music'}
+          >
+            {isMusicOn ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="music-icon">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="music-icon">
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+              </svg>
+            )}
+          </button>
+          <img
+            src={getAssetPath(
+              isMobile
+                ? (mode === 'easy' ? 'UI/mobile-hard.png' : 'UI/mobile-easy.png')
+                : (mode === 'easy' ? 'UI/Light Wood-hard.png' : 'UI/Light Wood-easy.png')
+            )}
+            alt={mode === 'easy' ? t('switchToHard') : t('switchToEasy')}
+            className="mode-toggle-button"
+            onClick={handleModeToggle}
+          />
+        </div>
       </div>
 
       {isAdmin && (
