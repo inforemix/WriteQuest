@@ -1035,23 +1035,25 @@ function GameView({ stage, onComplete, allStages }) {
       )}
 
       {moveLimitExceeded && (
-        <div className="move-limit-modal">
-          <div className="move-limit-icon-container">
-            <img
-              src={getAssetPath('UI/head-limitreach.png')}
-              alt="Move Limit Reached"
-              className="move-limit-icon"
-            />
-          </div>
-          <div className="move-limit-title">Move Limit Reached!</div>
-          <p className="move-limit-text">You've used all {moveLimit} moves. Try again!</p>
-          <div className="move-limit-actions">
-            <button className="move-limit-restart-button" onClick={handleRestartPuzzle}>
-              🔄 {t('restartPuzzle')}
-            </button>
-            <button className="move-limit-back-button" onClick={onComplete}>
-              ← {t('backToMap')}
-            </button>
+        <div className="move-limit-overlay">
+          <div className="move-limit-modal">
+            <div className="move-limit-icon-container">
+              <img
+                src={getAssetPath('UI/head-limitreach.png')}
+                alt="Move Limit Reached"
+                className="move-limit-icon"
+              />
+            </div>
+            <div className="move-limit-title">Move Limit Reached!</div>
+            <p className="move-limit-text">You've used all {moveLimit} moves. Try again!</p>
+            <div className="move-limit-actions">
+              <button className="move-limit-restart-button" onClick={handleRestartPuzzle}>
+                🔄 {t('restartPuzzle')}
+              </button>
+              <button className="move-limit-back-button" onClick={onComplete}>
+                ← {t('backToMap')}
+              </button>
+            </div>
           </div>
         </div>
       )}
