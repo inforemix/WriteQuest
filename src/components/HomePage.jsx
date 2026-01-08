@@ -11,10 +11,6 @@ function HomePage({ isAdmin, setIsAdmin, onModeSelect }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showStory, setShowStory] = useState(false);
 
-  // Start background music on mount
-  useEffect(() => {
-    soundManager.startBackgroundMusic();
-  }, []);
 
   const handlePlayClick = () => {
     soundManager.playClick();

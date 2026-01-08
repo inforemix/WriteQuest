@@ -25,6 +25,13 @@ function MapView({ mode, stages, isAdmin, onBack, onPlayStage, onDeleteStage, on
   // Check if on mobile
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // Start background music when entering the map
+  useEffect(() => {
+    if (isMusicOn) {
+      soundManager.startBackgroundMusic();
+    }
+  }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
