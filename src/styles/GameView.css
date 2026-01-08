@@ -749,6 +749,124 @@
   transform: translateY(-2px);
 }
 
+/* Move Limit Modal - Glassy Design */
+.move-limit-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  z-index: 3000;
+  text-align: center;
+  animation: scaleIn 0.3s ease-in-out;
+  max-width: 400px;
+  width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.move-limit-icon-container {
+  margin-bottom: 20px;
+}
+
+.move-limit-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  animation: rotateIcon 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes rotateIcon {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.move-limit-title {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.move-limit-text {
+  font-family: "Google Sans", sans-serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 28px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.move-limit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.move-limit-restart-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.move-limit-restart-button:hover {
+  background: rgba(5, 150, 105, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.move-limit-back-button {
+  font-family: "Google Sans", sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.move-limit-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
 /* Tutorial Modal */
 .tutorial-overlay {
   position: fixed;
