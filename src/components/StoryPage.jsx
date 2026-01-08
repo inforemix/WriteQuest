@@ -12,7 +12,7 @@ function StoryPage({ isOpen, onClose }) {
 
   const handleSignUpClick = () => {
     soundManager.playClick();
-    window.open('https://forms.gle/your-signup-form', '_blank');
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSdO8oJ0zjNSDlo3KqzdmwiBfE7IVY5vBrQBxMkwK3w5kOCdag/viewform?usp=publish-editor', '_blank');
   };
 
   // Extract video ID from YouTube URL
@@ -23,7 +23,7 @@ function StoryPage({ isOpen, onClose }) {
     return (match && match[2].length === 11) ? match[2] : null;
   };
   const videoId = getYouTubeId(videoUrl);
-  const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
 
   return (
     <div className="story-page">
@@ -33,7 +33,7 @@ function StoryPage({ isOpen, onClose }) {
           <img src={getAssetPath('UI/back.png')} alt="Back" className="story-back-icon" />
         </button>
 
-        {/* YouTube Video */}
+        {/* YouTube Video - Full Width */}
         <div className="story-video-container">
           <iframe
             src={embedUrl}
@@ -54,13 +54,6 @@ function StoryPage({ isOpen, onClose }) {
           />
 
           <div className="story-center-content">
-            {/* WriteQuest Logo */}
-            <img
-              src={getAssetPath('UI/title.png')}
-              alt="Write Quest"
-              className="story-logo"
-            />
-
             {/* Story Text */}
             <p className="story-text">
               Once a living paradise, the island is now buried in smog,

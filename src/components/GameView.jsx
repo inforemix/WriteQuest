@@ -327,12 +327,6 @@ function GameView({ stage, onComplete, allStages }) {
     [newPieces[draggedIdx].currentIndex, newPieces[targetIdx].currentIndex] =
       [newPieces[targetIdx].currentIndex, newPieces[draggedIdx].currentIndex];
 
-    // Reset rotation for both pieces after swap - no more rotation needed after moving
-    newPieces[draggedIdx].rotation = 0;
-    newPieces[draggedIdx].displayRotation = 0;
-    newPieces[targetIdx].rotation = 0;
-    newPieces[targetIdx].displayRotation = 0;
-
     setPieces(newPieces);
     setDraggedPiece(null);
     setDraggedFromIndex(null);

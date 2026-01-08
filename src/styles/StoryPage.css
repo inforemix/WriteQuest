@@ -53,12 +53,12 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* Video Container */
+/* Video Container - Full Width */
 .story-video-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
@@ -114,15 +114,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* Logo */
-.story-logo {
-  width: 100%;
-  max-width: 350px;
-  height: auto;
-  margin-bottom: 20px;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
 }
 
 /* Story Text */
@@ -233,10 +224,6 @@
     padding-top: 50px;
   }
 
-  .story-logo {
-    max-width: 250px;
-  }
-
   .story-text {
     font-size: 0.95rem;
     padding: 0 5px;
@@ -255,10 +242,6 @@
 
   .story-mascot {
     width: 60px;
-  }
-
-  .story-logo {
-    max-width: 200px;
   }
 
   .story-text {
