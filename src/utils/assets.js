@@ -2,7 +2,8 @@
 export const getAssetPath = (path) => {
   // Remove leading slash if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  // In production, Vite will set BASE_URL to '/WriteAqua/'
-  // In development, it will be '/'
+  // Vite automatically sets BASE_URL based on vite.config.js base setting
+  // In development: '/'
+  // In production: same base as configured (default: '/')
   return `${import.meta.env.BASE_URL}${cleanPath}`;
 };
