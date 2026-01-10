@@ -211,6 +211,7 @@
     position: relative;
     max-width: 320px;
     margin: 0 auto;
+    margin-left: 100px;
     padding: 40px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -762,9 +763,9 @@
 
   .progress-unified {
     flex: 1;
-    min-width: 100px;
-    max-width: 160px;
-    gap: 3px;
+    min-width: 80px;
+    max-width: 140px;
+    gap: 2px;
     padding: 0;
     margin: 0;
     width: auto;
@@ -778,8 +779,8 @@
   }
 
   .progress-circle svg {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
   .progress-info {
@@ -791,7 +792,7 @@
   }
 
   .progress-label {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0px;
@@ -801,7 +802,7 @@
   }
 
   .progress-numbers {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -810,7 +811,7 @@
 
   .header-right-controls {
     position: static;
-    gap: 6px;
+    gap: 4px;
     margin-left: 0;
     margin-right: 0;
     display: flex;
@@ -820,15 +821,27 @@
   }
 
   .mode-toggle-button {
-    height: 28px;
+    height: 24px;
     width: auto;
     flex-shrink: 0;
-    max-width: 50px;
+    max-width: 40px;
+  }
+
+  .music-toggle-button {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .music-icon {
+    width: 12px;
+    height: 12px;
   }
 
   .map-container {
     max-width: 320px;
     margin: 0 auto;
+    margin-left: 100px;
     gap: 30px 10px;
     padding: 20px 10px;
     display: grid;
